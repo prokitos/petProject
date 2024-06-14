@@ -23,6 +23,4 @@ func handlers(instance *fiber.App) {
 	instance.Post("/login", loginRoute)
 	instance.Post("/register", registerRoute)
 
-	instance.Post("/test", testRoute)
-
 }

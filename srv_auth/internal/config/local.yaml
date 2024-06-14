@@ -1,0 +1,11 @@
+env: "local"
+server:
+  port: ":8002"
+  token_ttl: 1h
+postgres:
+  user: "postgres"
+  pass: "root"
+  port: "8092"
+  host: "localhost"
+  name: "pets"
+  reload: false

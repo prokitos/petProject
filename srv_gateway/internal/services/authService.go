@@ -1,12 +1,30 @@
 package services
 
-import "github.com/gofiber/fiber/v2"
+import (
+	"module/internal/models"
 
-func register(c *fiber.Ctx) error {
+	"github.com/gofiber/fiber/v2"
+)
+
+func Register(c *fiber.Ctx) error {
+
+	var sendData models.TokenResponser
+	sendData.Login = c.Query("login", "")
+	sendData.Password = c.Query("password", "")
+	sendData.PasswordConfirm = c.Query("password_confirm", "")
+
+	sendToSecond(c, sendData, "register")
 
 	return c.SendStatus(fiber.StatusAccepted)
 }
 
-func authorization(c *fiber.Ctx) error {
+func Authorization(c *fiber.Ctx) error {
+
+	var sendData models.TokenResponser
+	sendData.Login = c.Query("login", "")
+	sendData.Password = c.Query("password", "")
+
+	sendToSecond(c, sendData, "login")
+
 	return c.SendStatus(fiber.StatusAccepted)
 }

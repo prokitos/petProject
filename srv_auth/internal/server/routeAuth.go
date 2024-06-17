@@ -9,15 +9,18 @@ import (
 
 func loginRoute(c *fiber.Ctx) error {
 	res, err := services.Authorization(c)
-	fmt.Println(res)
 
 	// вернет bad request при ошибке, и accepter если логин и пароль есть в базе
-	return err
+	return c.Status(fiber.StatusCreated).JSON(fiber.Map{"status": err, "data": res})
 }
 
 func registerRoute(c *fiber.Ctx) error {
 
 	res, err := services.Registration(c)
-	fmt.Println(res)
-	return err
+
+	fmt.Println(err)
+	// err to string?
+
+	// вернет bad request при ошибке, и accepter если регистрация успешна
+	return c.Status(fiber.StatusCreated).JSON(fiber.Map{"status": err, "data": res})
 }

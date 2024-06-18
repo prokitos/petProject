@@ -16,18 +16,17 @@ func Authorization(c *fiber.Ctx) (models.TokenResponser, error) {
 	curUser.Password = c.Query("password", "")
 
 	if len(curUser.Login) < 5 || len(curUser.Password) < 5 {
-		return models.TokenResponser{}, c.SendStatus(fiber.StatusBadRequest)
+		return models.TokenResponser{}, errors.New("an error")
 	}
 
 	// проверка пользователя и его уровня доступа. потом генерация токена
 	curUser, err := database.GetExistingUser(c, curUser)
 	if err != nil {
-		return models.TokenResponser{}, c.SendStatus(fiber.StatusBadRequest)
+		return models.TokenResponser{}, errors.New("an error")
 	}
 
-	res := TokenGetPair(curUser)
-
-	return res, c.SendStatus(fiber.StatusAccepted)
+	res := TokenGetAccess(curUser)
+	return res, errors.New("good")
 }
 
 func Registration(c *fiber.Ctx) (models.TokenResponser, error) {
@@ -37,10 +36,10 @@ func Registration(c *fiber.Ctx) (models.TokenResponser, error) {
 	confirmPassword := c.Query("password_confirm", "")
 
 	if password != confirmPassword {
-		return models.TokenResponser{}, errors.New("custom error")
+		return models.TokenResponser{}, errors.New("an error")
 	}
 	if len(login) < 5 || len(password) < 5 {
-		return models.TokenResponser{}, errors.New("custom error")
+		return models.TokenResponser{}, errors.New("an error")
 	}
 
 	var curUser models.Users
@@ -55,8 +54,8 @@ func Registration(c *fiber.Ctx) (models.TokenResponser, error) {
 	curUser, err := database.CreateNewUser(c, curUser)
 	if err != nil {
 		fmt.Println("случилась ошибка!()")
-		return models.TokenResponser{}, c.SendStatus(fiber.StatusBadRequest)
+		return models.TokenResponser{}, errors.New("an error")
 	}
 
-	return res, c.SendStatus(fiber.StatusAccepted)
+	return res, errors.New("good")
 }

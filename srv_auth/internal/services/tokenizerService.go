@@ -31,6 +31,17 @@ func TokenGetPair(curUser models.Users) models.TokenResponser {
 	return responser
 }
 
+func TokenGetAccess(curUser models.Users) models.TokenResponser {
+	var access string = createTokenAccess(curUser)
+
+	responser := models.TokenResponser{
+		AccessToken:  access,
+		RefreshToken: "",
+	}
+
+	return responser
+}
+
 // создание аксес токена.
 func createTokenAccess(curUser models.Users) string {
 

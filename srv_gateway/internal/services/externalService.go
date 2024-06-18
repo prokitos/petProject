@@ -2,6 +2,7 @@ package services
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"module/internal/models"
@@ -14,7 +15,7 @@ import (
 
 var secretKey string = "gpt45"
 
-func sendToSecond(c *fiber.Ctx, sendData models.TokenResponser, supAddress string) {
+func sendToSecond(c *fiber.Ctx, sendData models.TokenResponser, supAddress string) (models.Tokens, error) {
 
 	baseURL, _ := url.Parse("http://localhost:8002/" + supAddress)
 
@@ -31,31 +32,21 @@ func sendToSecond(c *fiber.Ctx, sendData models.TokenResponser, supAddress strin
 	resp, err := client.PostForm(baseURL.String(), params)
 	if err != nil {
 		fmt.Println("no connect to auth service")
-		return
+		return models.Tokens{}, errors.New("not connection to external service")
 	}
 
 	defer resp.Body.Close()
 
 	body, _ := ioutil.ReadAll(resp.Body)
-	convertResult(body)
+
+	models := convertResult(body)
+	return models.Data, errors.New(models.Status)
 
 }
 
-func convertResult(res []byte) {
-	var test TestStruct
-	json.Unmarshal(res, &test)
+func convertResult(res []byte) models.ExternalStruct {
+	var instance models.ExternalStruct
+	json.Unmarshal(res, &instance)
 
-	fmt.Println(test.Data)
-	fmt.Println()
-	fmt.Println(test)
-}
-
-type TestStruct struct {
-	Status error
-	Data   TokenResponser
-}
-
-type TokenResponser struct {
-	AccessToken  string
-	RefreshToken string
+	return instance
 }

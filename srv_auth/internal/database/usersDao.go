@@ -12,7 +12,7 @@ func CreateNewUser(c *fiber.Ctx, curUser models.Users) (models.Users, error) {
 
 	if result := GlobalHandler.Create(&curUser); result.Error != nil {
 		log.Debug("create record error!")
-		return models.Users{}, c.SendStatus(fiber.StatusAccepted)
+		return models.Users{}, errors.New("custom error")
 	}
 
 	return curUser, nil

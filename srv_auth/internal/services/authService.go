@@ -25,7 +25,9 @@ func Authorization(c *fiber.Ctx) (models.TokenResponser, error) {
 		return models.TokenResponser{}, errors.New("an error")
 	}
 
-	res := TokenGetAccess(curUser)
+	res := TokenGetPair(curUser)
+	curUser.RefreshToken = res.RefreshToken
+
 	return res, errors.New("good")
 }
 

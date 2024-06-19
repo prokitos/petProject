@@ -23,4 +23,7 @@ func handlers(instance *fiber.App) {
 	instance.Post("/login", loginRoute)
 	instance.Post("/register", registerRoute)
 
+	instance.Post("/accessToken", checkAccessToken)
+	instance.Post("/refreshToken", checkRefreshToken)
+
 }

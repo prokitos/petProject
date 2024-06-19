@@ -90,10 +90,76 @@ func createTokenRefresh(curUser models.Users, accessToken string) string {
 	return tokenString
 }
 
+// метод для проведения проверки аксес токена
+func TokenAccessValidate(bearer string) string {
+
+	token, err := validateAccessToken(bearer)
+	if err != nil {
+		if err == jwt.ErrSignatureInvalid {
+			return "unathorized"
+		}
+		return "unathorized"
+	}
+
+	if !token.Valid {
+		return "token expired"
+	}
+
+	// токен валиден. вернуть результат
+	return "token useful"
+
+}
+
+// метод для проведения проверки рефреш токена
+func TokenRefreshValidate(bearer string) string {
+
+	token, err := validateAccessToken(bearer)
+	if err != nil {
+		if err == jwt.ErrSignatureInvalid {
+			return "unathorized"
+		}
+		return "unathorized"
+	}
+
+	if !token.Valid {
+		return "token expired"
+	}
+
+	// токен валиден. вернуть результат
+	return "token useful"
+
+}
+
+func GetAccessTokenFromRefresh(bearer string) string {
+
+	token, err := validateRefreshToken(bearer)
+	if err != nil {
+		if err == jwt.ErrSignatureInvalid {
+			return "unathorized"
+		}
+		return "unathorized"
+	}
+
+	if !token.Valid {
+		return "token expired"
+	}
+
+	// токен валиден. вернуть новый аксес токен
+	user := token.Claims.(*models.RefreshToken)
+
+	var temp models.Users
+	temp.Login = user.Login
+	temp.AccessLevel = user.AccessLevel
+
+	result := createTokenAccess(temp)
+
+	return result
+}
+
 // проверка валидности access токена
 func validateAccessToken(bearerToken string) (*jwt.Token, error) {
 
-	tokenString := strings.Split(bearerToken, " ")[1]
+	tokenString := strings.Split(bearerToken, " ")[1] // мы получаем токен в виде "bearer HG4HGK4FDRH45" и поэтому мы тут убираем слово bearer и пробел
 	token, err := jwt.ParseWithClaims(tokenString, &models.AccessToken{}, func(token *jwt.Token) (interface{}, error) {
 		return accessKey, nil
 	})
@@ -103,63 +169,10 @@ func validateAccessToken(bearerToken string) (*jwt.Token, error) {
 // проверка валидности refresh токена
 func validateRefreshToken(bearerToken string) (*jwt.Token, error) {
 
-	tokenString := bearerToken
+	tokenString := strings.Split(bearerToken, " ")[1] // мы получаем токен в виде "bearer HG4HGK4FDRH45" и поэтому мы тут убираем слово bearer и пробел
 	token, err := jwt.ParseWithClaims(tokenString, &models.RefreshToken{}, func(token *jwt.Token) (interface{}, error) {
 		return refreshKey, nil
 	})
 
 	return token, err
 }
-
-// // получить новый рефреш токен
-// func RenewToken(refreshToken string, accessToken string) models.TokenResponser {
-
-// 	var result models.TokenResponser
-
-// 	// проверка рефреш токена
-// 	token, err := validateRefreshToken(refreshToken)
-// 	if err != nil {
-// 		result.RefreshToken = "refresh token unauthorized"
-// 		if err == jwt.ErrSignatureInvalid {
-// 			result.RefreshToken = "refresh token sign unknown"
-// 			return result
-// 		}
-// 		return result
-// 	}
-
-// 	if !token.Valid {
-// 		result.RefreshToken = "refresh token expired"
-// 		return result
-// 	}
-
-// 	refToken := token.Claims.(*TokenRefreshData)
-
-// 	if refToken.AcceessToken != accessToken {
-// 		result.RefreshToken = "access token missmatch"
-// 		return result
-// 	}
-
-// 	// токен валиден. удаляем рефреш токен из базы, получаем новый аксес токен
-// 	var DBmodel models.TokenDB
-// 	DBmodel.GUID = refToken.GUID
-// 	DBmodel.RefreshToken = refreshToken
-
-// 	// проверка что в базе есть такой токен, и что он принадлежит этому пользователю
-// 	retModel := database.SearchToken(DBmodel)
-// 	if retModel.RefreshToken != DBmodel.RefreshToken {
-// 		result.RefreshToken = "wrong user in token"
-// 		return result
-// 	}
-
-// 	// удаление всех токенов (если как-то получилось много) у данного GUID из базы (возможно не надо)
-// 	// !!!!!!!!!!!!!!!!!!!!!!
-// 	var DBmodelDel models.TokenDB
-// 	DBmodelDel.GUID = refToken.GUID
-// 	database.DeleteToken(DBmodelDel)
-// 	// !!!!!!!!!!!!!!!!!!!!!!
-
-// 	// создание нового рефреш и аксес токена
-// 	result = TokenGetPair(refToken.GUID)
-
-// 	return result
-// }

@@ -33,5 +33,5 @@ func Authorization(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusCreated).JSON(fiber.Map{"status": err.Error()})
 	}
 
-	return c.Status(fiber.StatusCreated).JSON(fiber.Map{"status": err.Error(), "accessToken": res.AccessToken})
+	return c.Status(fiber.StatusCreated).JSON(fiber.Map{"status": err.Error(), "accessToken": res.AccessToken, "refreshToken": res.RefreshToken})
 }

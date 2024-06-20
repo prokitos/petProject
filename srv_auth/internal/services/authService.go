@@ -28,6 +28,12 @@ func Authorization(c *fiber.Ctx) (models.TokenResponser, error) {
 	res := TokenGetPair(curUser)
 	curUser.RefreshToken = res.RefreshToken
 
+	// записываем новый рефреш токен в базу
+	err = database.UpdateRefreshToken(c, curUser)
+	if err != nil {
+		return models.TokenResponser{}, errors.New("error to add refresh token")
+	}
+
 	return res, errors.New("good")
 }
 
@@ -52,8 +58,15 @@ func Registration(c *fiber.Ctx) (models.TokenResponser, error) {
 	res := TokenGetPair(curUser)
 	curUser.RefreshToken = res.RefreshToken
 
+	// проверка что нет пользователя с таким именем
+	err := database.CheckUserName(c, models.Users{Login: login})
+	if err != nil {
+		fmt.Println("случилась ошибка!()")
+		return models.TokenResponser{}, errors.New("already has user with current login")
+	}
+
 	// создание нового пользователя с 1 уровнем доступа. потом генерация токена
-	curUser, err := database.CreateNewUser(c, curUser)
+	curUser, err = database.CreateNewUser(c, curUser)
 	if err != nil {
 		fmt.Println("случилась ошибка!()")
 		return models.TokenResponser{}, errors.New("an error")

@@ -19,13 +19,14 @@ func main() {
 
 	// получение конфигов
 	cfg := config.ConfigMustLoad()
-	var application app.App
+	config.TokenConfigLoadToService(cfg.Token)
 
 	// миграция и подключение к бд.
 	database.OpenConnection(cfg.Connect)
 	database.StartMigration()
 
 	// запуск сервера в горутине, чтобы потом нормально звершать приложение
+	var application app.App
 	go application.NewServer(cfg.Server)
 
 	// в итоге мы обрабатываем завершение приложения, и если мы закрыаем его как либо, то оно выполняет действие из метода Stop

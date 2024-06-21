@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
+	"module/internal/config"
 	"module/internal/models"
 	"net/http"
 	"net/url"
@@ -13,11 +14,9 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-var secretKey string = "gpt45"
+func sendToAuth(c *fiber.Ctx, sendData models.TokenResponser, supAddress string) (models.Tokens, error) {
 
-func sendToSecond(c *fiber.Ctx, sendData models.TokenResponser, supAddress string) (models.Tokens, error) {
-
-	baseURL, _ := url.Parse("http://localhost:8002/" + supAddress)
+	baseURL, _ := url.Parse(config.ExternalAddress.AuthService + supAddress)
 
 	params := url.Values{}
 	params.Add("login", sendData.Login)

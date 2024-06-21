@@ -9,11 +9,11 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-var accessKey = []byte("basic_key")
-var refreshKey = []byte("super_mega_key")
+var AccessKey []byte
+var RefreshKey []byte
 
-var accessDuration time.Duration = time.Minute
-var refreshDuration time.Duration = time.Minute * 5
+var AccessDuration time.Duration
+var RefreshDuration time.Duration
 
 // получение пары access и refresh token. передача refresh в базу данных
 func TokenGetPair(curUser models.Users) models.TokenResponser {
@@ -25,8 +25,6 @@ func TokenGetPair(curUser models.Users) models.TokenResponser {
 		AccessToken:  access,
 		RefreshToken: refresh,
 	}
-
-	// запись рефреш токена в базу данных, значит потом его проверять при новом рефреш токене
 
 	return responser
 }
@@ -50,13 +48,13 @@ func createTokenAccess(curUser models.Users) string {
 		Login:       curUser.Login,
 		AccessLevel: curUser.AccessLevel,
 		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(accessDuration).Unix(),
+			ExpiresAt: time.Now().Add(AccessDuration).Unix(),
 		},
 	}
 
 	// шифруем с помощью accessKey. метод HS = HMAC + SHA 512
 	token := jwt.NewWithClaims(jwt.SigningMethodHS512, tokenObj)
-	tokenString, err := token.SignedString(accessKey)
+	tokenString, err := token.SignedString(AccessKey)
 	if err != nil {
 		log.Error("token dont signed")
 		return ""
@@ -75,13 +73,13 @@ func createTokenRefresh(curUser models.Users, accessToken string) string {
 		AccessLevel:  curUser.AccessLevel,
 		AcceessToken: accessToken,
 		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(refreshDuration).Unix(),
+			ExpiresAt: time.Now().Add(RefreshDuration).Unix(),
 		},
 	}
 
 	// шифруем с помощью refreshKey. метод HS = HMAC + SHA 512
 	token := jwt.NewWithClaims(jwt.SigningMethodHS512, tokenObj)
-	tokenString, err := token.SignedString(refreshKey)
+	tokenString, err := token.SignedString(RefreshKey)
 	if err != nil {
 		log.Error("token dont signed")
 		return ""
@@ -161,7 +159,7 @@ func validateAccessToken(bearerToken string) (*jwt.Token, error) {
 
 	tokenString := strings.Split(bearerToken, " ")[1] // мы получаем токен в виде "bearer HG4HGK4FDRH45" и поэтому мы тут убираем слово bearer и пробел
 	token, err := jwt.ParseWithClaims(tokenString, &models.AccessToken{}, func(token *jwt.Token) (interface{}, error) {
-		return accessKey, nil
+		return AccessKey, nil
 	})
 	return token, err
 }
@@ -171,7 +169,7 @@ func validateRefreshToken(bearerToken string) (*jwt.Token, error) {
 
 	tokenString := strings.Split(bearerToken, " ")[1] // мы получаем токен в виде "bearer HG4HGK4FDRH45" и поэтому мы тут убираем слово bearer и пробел
 	token, err := jwt.ParseWithClaims(tokenString, &models.RefreshToken{}, func(token *jwt.Token) (interface{}, error) {
-		return refreshKey, nil
+		return RefreshKey, nil
 	})
 
 	return token, err

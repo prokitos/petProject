@@ -1,7 +1,11 @@
 env: "local"
 server:
   port: ":8002"
-  token_ttl: 1h
+token:
+  access_ttl: 1h
+  refresh_ttl: 24h
+  access_key: "basic_key"
+  refresh_key: "super_mega_key"
 postgres:
   user: "postgres"
   pass: "root"

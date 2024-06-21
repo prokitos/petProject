@@ -14,7 +14,7 @@ func Register(c *fiber.Ctx) error {
 	sendData.Password = c.Query("password", "")
 	sendData.PasswordConfirm = c.Query("password_confirm", "")
 
-	res, err := sendToSecond(c, sendData, "register")
+	res, err := sendToAuth(c, sendData, "register")
 	if err.Error() != errors.New("good").Error() {
 		return c.Status(fiber.StatusCreated).JSON(fiber.Map{"status": err.Error()})
 	}
@@ -28,7 +28,7 @@ func Authorization(c *fiber.Ctx) error {
 	sendData.Login = c.Query("login", "")
 	sendData.Password = c.Query("password", "")
 
-	res, err := sendToSecond(c, sendData, "login")
+	res, err := sendToAuth(c, sendData, "login")
 	if err.Error() != errors.New("good").Error() {
 		return c.Status(fiber.StatusCreated).JSON(fiber.Map{"status": err.Error()})
 	}

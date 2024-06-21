@@ -2,6 +2,7 @@ package config
 
 import (
 	"module/internal/models"
+	"module/internal/services"
 	"os"
 
 	"github.com/ilyakaznacheev/cleanenv"
@@ -21,4 +22,20 @@ func ConfigMustLoad() *models.Config {
 	}
 
 	return &cfg
+}
+
+func TokenConfigLoadToService(cfg models.TokenConfig) {
+
+	services.AccessKey = []byte(cfg.AccessKey)
+	services.RefreshKey = []byte(cfg.RefreshKey)
+	services.AccessDuration = cfg.AccessTTL
+	services.RefreshDuration = cfg.RefreshTTL
+
+	if cfg.AccessTTL == 0 || cfg.RefreshTTL == 0 {
+		panic("empty TTL in token")
+	}
+	if cfg.AccessKey == "" || cfg.RefreshKey == "" {
+		panic("empty keys in token")
+	}
+
 }

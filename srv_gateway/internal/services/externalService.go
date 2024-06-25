@@ -38,14 +38,41 @@ func sendToAuth(c *fiber.Ctx, sendData models.TokenResponser, supAddress string)
 
 	body, _ := ioutil.ReadAll(resp.Body)
 
-	models := convertResult(body)
-	return models.Data, errors.New(models.Status)
+	var instance models.ExternalStruct
+	json.Unmarshal(body, &instance)
+
+	return instance.Data, errors.New(instance.Status)
 
 }
 
-func convertResult(res []byte) models.ExternalStruct {
-	var instance models.ExternalStruct
-	json.Unmarshal(res, &instance)
+func sendTokenToCheck(c *fiber.Ctx, token string, supAddress string) error {
 
-	return instance
+	baseURL := config.ExternalAddress.AuthService + supAddress
+
+	var bearer = token
+	req, err := http.NewRequest("POST", baseURL, nil)
+	req.Header.Add("Authorization", bearer)
+
+	client := http.Client{
+		Timeout: 1 * time.Second,
+	}
+
+	resp, err := client.Do(req)
+	if err != nil {
+		fmt.Println("no connect to auth service")
+		return errors.New("not connection to external service")
+	}
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		fmt.Println("error reading byte")
+		return errors.New("error encoding response of server")
+	}
+
+	var instance models.ExternalStruct
+	json.Unmarshal(body, &instance)
+
+	return c.Status(fiber.StatusCreated).JSON(fiber.Map{"status": instance.Status})
+
 }

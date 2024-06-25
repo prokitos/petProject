@@ -17,3 +17,17 @@ func registerRoute(c *fiber.Ctx) error {
 	services.Register(c)
 	return c.SendStatus(fiber.StatusAccepted)
 }
+
+func tokenAccess(c *fiber.Ctx) error {
+
+	services.TokenCheck(c)
+	return c.SendStatus(fiber.StatusAccepted)
+}
+
+func tokenRefresh(c *fiber.Ctx) error {
+
+	// если у нас истёк аксес токен, мы снова обращаемся к сервису авторизации
+	// он проверяет что рефреш токен валиден, и выдаёт новый аксес токен
+
+	return c.SendStatus(fiber.StatusAccepted)
+}

@@ -39,9 +39,7 @@ func Authorization(c *fiber.Ctx) error {
 func TokenCheck(c *fiber.Ctx) error {
 
 	authorization := c.Get("Authorization")
-	sendTokenToCheck(c, authorization, "/accessToken")
-
-	return c.SendStatus(fiber.StatusAccepted)
+	return sendTokenToCheck(c, authorization, "/accessToken")
 }
 
 func TokenRefresher(c *fiber.Ctx) error {

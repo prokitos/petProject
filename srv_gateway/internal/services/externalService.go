@@ -73,6 +73,6 @@ func sendTokenToCheck(c *fiber.Ctx, token string, supAddress string) error {
 	var instance models.ExternalStruct
 	json.Unmarshal(body, &instance)
 
-	return c.Status(fiber.StatusCreated).JSON(fiber.Map{"status": instance.Status})
+	return errors.New(instance.Status)
 
 }

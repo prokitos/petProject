@@ -5,3 +5,7 @@ type TokenResponser struct {
 	Password        string
 	PasswordConfirm string
 }
+
+type RequestParse struct {
+	Status string
+}

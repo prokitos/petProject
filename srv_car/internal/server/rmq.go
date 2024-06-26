@@ -3,6 +3,7 @@ package server
 import (
 	"encoding/json"
 	"log"
+	"module/internal/models"
 	"os"
 
 	"github.com/streadway/amqp"
@@ -15,7 +16,7 @@ func handleError(err error, msg string) {
 
 }
 
-func consuming() {
+func Consuming() {
 	conn, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
 	handleError(err, "Can't connect to AMQP")
 	defer conn.Close()
@@ -49,7 +50,7 @@ func consuming() {
 		for d := range messageChannel {
 			// log.Printf("Received a message: %s", d.Body)
 
-			addTask := &Person{}
+			addTask := &models.CarToRM{}
 
 			err := json.Unmarshal(d.Body, addTask)
 
@@ -72,12 +73,10 @@ func consuming() {
 	<-stopChan
 }
 
-func ShowWhatToGet(instance *Person) {
+func ShowWhatToGet(instance *models.CarToRM) {
 
-	log.Printf("Recieved to db  %s %s", instance.Name)
+	log.Printf("Recieved to db  %s %s", instance.Mark, instance.RegNum)
 
 }
 
-type Person struct {
-	Name string
-}
+// func RMgateway функция которая распределяет на роуты

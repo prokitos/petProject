@@ -20,8 +20,7 @@ func registerRoute(c *fiber.Ctx) error {
 
 func tokenAccess(c *fiber.Ctx) error {
 
-	services.TokenCheck(c)
-	return c.SendStatus(fiber.StatusAccepted)
+	return services.TokenCheck(c)
 }
 
 func tokenRefresh(c *fiber.Ctx) error {

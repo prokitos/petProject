@@ -1,7 +1,7 @@
 package main
 
 import (
-	"module/internal/app"
+	"module/internal/server"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -12,7 +12,6 @@ func main() {
 	log.SetLevel(log.DebugLevel)
 	log.Info("the server is starting")
 
-	var application app.App
-	application.NewServer(":8003")
+	server.Consuming()
 
 }

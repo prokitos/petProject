@@ -18,11 +18,6 @@ type People struct {
 }
 
 type CarToRM struct {
-	Id     string `json:"id" example:"12"`
-	RegNum string `json:"regNum" example:""`
-	Mark   string `json:"mark" example:""`
-	Model  string `json:"model" example:"tesla"`
-	Year   string `json:"year" example:""`
-	Owner  People `json:"owner"`
-	Types  string
+	Car
+	Types string
 }

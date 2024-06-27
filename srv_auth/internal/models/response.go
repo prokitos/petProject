@@ -1,4 +1,15 @@
 package models
 
-// тут надо будет добавить ответы при разных ошибках и исключениях.
-// c.Status(fiber.StatusBadGateway).JSON(fiber.Map{"status": "error", "message": result.Error.Error()})
+import "errors"
+
+func ResponseGood() error {
+	return errors.New("good")
+}
+
+func ResponseErrorAtServer() error {
+	return errors.New("internal error")
+}
+
+func ResponseBadRequest() error {
+	return errors.New("bad request")
+}

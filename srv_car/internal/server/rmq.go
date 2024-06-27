@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"module/internal/models"
+	"module/internal/services"
 	"os"
 
 	"github.com/streadway/amqp"
@@ -58,7 +59,7 @@ func Consuming() {
 				log.Printf("Error decoding JSON: %s", err)
 			}
 
-			ShowWhatToGet(addTask)
+			GatewayCar(addTask)
 
 			if err := d.Ack(false); err != nil {
 				log.Printf("Error acknowledging message : %s", err)
@@ -73,10 +74,22 @@ func Consuming() {
 	<-stopChan
 }
 
-func ShowWhatToGet(instance *models.CarToRM) {
+func GatewayCar(car *models.CarToRM) {
 
-	log.Printf("Recieved to db  %s %s", instance.Mark, instance.RegNum)
+	types := car.Types
+
+	var tempCar models.Car
+	tempCar = car.Car
+
+	switch types {
+	case "insert":
+		services.CarInsert(tempCar)
+	case "delete":
+		services.CarDelete(tempCar)
+	case "update":
+		services.CarUpdate(tempCar)
+	case "show":
+		services.CarShow(tempCar)
+	}
 
 }
-
-// func RMgateway функция которая распределяет на роуты

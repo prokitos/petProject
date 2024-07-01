@@ -11,7 +11,7 @@ type Car struct {
 	MaxSpeed     int                 `json:"speed" example:""`
 	SeatsNum     int                 `json:"seats" example:""`
 	Engine       CarEngine           `json:"engine" example:""`
-	Devices      []AdditionalDevices `json:"devices" example:""`                                                                                                                     // один ко многим
+	Devices      []AdditionalDevices `json:"devices" example:"" gorm:"foreignKey:Owner;references:Id"`                                                                               // один ко многим
 	OwnerList    []People            `json:"all_owners" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;many2many:owners_bounds;joinForeignKey:car_uid;JoinReferences:owner_uid"` // много ко многим
 	CurrentOwner People              `json:"cur_owner"`
 }
@@ -40,4 +40,5 @@ type Selling struct {
 type AdditionalDevices struct {
 	Id         int    `json:"device_id" example:"" gorm:"unique;primaryKey;autoIncrement"`
 	DeviceName string `json:"device_name" example:""`
+	Owner      int64  `json:"owner" example:""`
 }

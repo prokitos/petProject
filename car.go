@@ -42,3 +42,8 @@ type AdditionalDevices struct {
 	DeviceName string `json:"device_name" example:""`
 	Owner      int64  `json:"owner" example:""`
 }
+
+type CarToRM struct {
+	Car
+	Types string
+}

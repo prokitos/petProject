@@ -2,14 +2,14 @@ package services
 
 import (
 	"fmt"
+	"module/internal/database"
 	"module/internal/models"
 )
 
 func CarInsert(curCar models.Car) error {
 
-	fmt.Println("insert", curCar.Mark)
+	return database.CreateNewCar(curCar)
 
-	return models.ResponseGood()
 }
 
 func CarDelete(curCar models.Car) error {
@@ -17,6 +17,7 @@ func CarDelete(curCar models.Car) error {
 	fmt.Println("delete", curCar.Id)
 
 	return models.ResponseGood()
+
 }
 
 func CarUpdate(curCar models.Car) error {
@@ -28,7 +29,5 @@ func CarUpdate(curCar models.Car) error {
 
 func CarShow(curCar models.Car) error {
 
-	fmt.Println("show", curCar.Mark)
-
-	return models.ResponseGood()
+	return database.ShowCar(curCar)
 }

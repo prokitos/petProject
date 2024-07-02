@@ -1,13 +1,14 @@
 package server
 
 import (
+	"context"
 	"encoding/json"
 	"log"
 	"module/internal/models"
 	"module/internal/services"
-	"os"
+	"time"
 
-	"github.com/streadway/amqp"
+	amqp "github.com/rabbitmq/amqp091-go"
 )
 
 func handleError(err error, msg string) {
@@ -18,63 +19,84 @@ func handleError(err error, msg string) {
 }
 
 func Consuming() {
+
 	conn, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
-	handleError(err, "Can't connect to AMQP")
+	handleError(err, "Failed to connect to RabbitMQ")
 	defer conn.Close()
 
-	amqpChannel, err := conn.Channel()
-	handleError(err, "Can't create a amqpChannel")
+	ch, err := conn.Channel()
+	handleError(err, "Failed to open a channel")
+	defer ch.Close()
 
-	defer amqpChannel.Close()
-
-	queue, err := amqpChannel.QueueDeclare("carService", true, false, false, false, nil)
-	handleError(err, "Could not declare `add` queue")
-
-	err = amqpChannel.Qos(1, 0, false)
-	handleError(err, "Could not configure QoS")
-
-	messageChannel, err := amqpChannel.Consume(
-		queue.Name,
-		"",
-		false,
-		false,
-		false,
-		false,
-		nil,
+	q, err := ch.QueueDeclare(
+		"carService", // name
+		true,         // durable
+		false,        // delete when unused
+		false,        // exclusive
+		false,        // no-wait
+		nil,          // arguments
 	)
-	handleError(err, "Could not register consumer")
+	handleError(err, "Failed to declare a queue")
 
-	stopChan := make(chan bool)
+	err = ch.Qos(
+		1,     // prefetch count
+		0,     // prefetch size
+		false, // global
+	)
+	handleError(err, "Failed to set QoS")
+
+	msgs, err := ch.Consume(
+		q.Name, // queue
+		"",     // consumer
+		false,  // auto-ack
+		false,  // exclusive
+		false,  // no-local
+		false,  // no-wait
+		nil,    // args
+	)
+	handleError(err, "Failed to register a consumer")
+
+	var forever chan struct{}
 
 	go func() {
-		log.Printf("Consumer ready, PID: %d", os.Getpid())
-		for d := range messageChannel {
-			// log.Printf("Received a message: %s", d.Body)
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
+		for d := range msgs {
 
 			addTask := &models.CarToRM{}
-
 			err := json.Unmarshal(d.Body, addTask)
-
 			if err != nil {
-				log.Printf("Error decoding JSON: %s", err)
+				return
 			}
 
 			GatewayCar(addTask)
 
-			if err := d.Ack(false); err != nil {
-				log.Printf("Error acknowledging message : %s", err)
-			} else {
-				//log.Printf("Acknowledged message")
-			}
+			var resp models.ResponseStr
+			resp.Description = "jorasad"
+			resp.Code = 2002
+			temp, err := json.Marshal(resp)
 
+			err = ch.PublishWithContext(ctx,
+				"",        // exchange
+				d.ReplyTo, // routing key
+				false,     // mandatory
+				false,     // immediate
+				amqp.Publishing{
+					ContentType:   "text/plain",
+					CorrelationId: d.CorrelationId,
+					Body:          temp,
+				})
+			handleError(err, "Failed to publish a message")
+
+			d.Ack(false)
 		}
 	}()
 
-	// Остановка для завершения программы
-	<-stopChan
+	log.Printf(" [*] Awaiting RPC requests")
+	<-forever
 }
 
-func GatewayCar(car *models.CarToRM) {
+func GatewayCar(car *models.CarToRM) error {
 
 	types := car.Types
 
@@ -83,13 +105,14 @@ func GatewayCar(car *models.CarToRM) {
 
 	switch types {
 	case "insert":
-		services.CarInsert(tempCar)
+		return services.CarInsert(tempCar)
 	case "delete":
-		services.CarDelete(tempCar)
+		return services.CarDelete(tempCar)
 	case "update":
-		services.CarUpdate(tempCar)
+		return services.CarUpdate(tempCar)
 	case "show":
-		services.CarShow(tempCar)
+		return services.CarShow(tempCar)
 	}
 
+	return nil
 }

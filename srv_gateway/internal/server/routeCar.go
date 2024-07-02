@@ -24,8 +24,7 @@ func carShow(c *fiber.Ctx) error {
 	res := tokenAccess(c)
 
 	if res.Error() == errors.New("token useful").Error() {
-		services.SendcarShow(c)
-		return c.SendStatus(fiber.StatusAccepted)
+		return services.SendcarShow(c)
 	}
 
 	return c.SendStatus(fiber.StatusBadRequest)

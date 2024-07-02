@@ -13,3 +13,9 @@ func ResponseErrorAtServer() error {
 func ResponseBadRequest() error {
 	return errors.New("bad request")
 }
+
+type ResponseStr struct {
+	Description string `json:"description"        example:"description"`
+	Code        int    `json:"code"               example:"status"`
+	Cars        []Car  `json:"cars"               example:"...."`
+}

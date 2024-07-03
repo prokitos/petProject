@@ -6,28 +6,28 @@ import (
 	"module/internal/models"
 )
 
-func CarInsert(curCar models.Car) error {
+func CarInsert(curCar models.Car) models.ResponseCar {
 
 	return database.CreateNewCar(curCar)
 
 }
 
-func CarDelete(curCar models.Car) error {
+func CarDelete(curCar models.Car) models.ResponseCar {
 
 	fmt.Println("delete", curCar.Id)
 
-	return models.ResponseGood()
+	return models.ResponseCar{}
 
 }
 
-func CarUpdate(curCar models.Car) error {
+func CarUpdate(curCar models.Car) models.ResponseCar {
 
 	fmt.Println("update", curCar.Id)
 
-	return models.ResponseGood()
+	return models.ResponseCar{}
 }
 
-func CarShow(curCar models.Car) error {
+func CarShow(curCar models.Car) models.ResponseCar {
 
 	return database.ShowCar(curCar)
 }

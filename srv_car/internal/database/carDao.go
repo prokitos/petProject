@@ -1,33 +1,29 @@
 package database
 
 import (
-	"errors"
-	"fmt"
 	"module/internal/models"
 
 	log "github.com/sirupsen/logrus"
 )
 
-func CreateNewCar(curUser models.Car) error {
+func CreateNewCar(curUser models.Car) models.ResponseCar {
 
 	if result := GlobalHandler.Create(&curUser); result.Error != nil {
 		log.Debug("create record error!")
-		return models.ResponseErrorAtServer()
+		return models.ResponseCarBadCreate()
 	}
 
-	log.Debug("record created")
-	return models.ResponseGood()
+	return models.ResponseCarGoodCreate()
 }
 
-func ShowCar(curModel models.Car) error {
+func ShowCar(curModel models.Car) models.ResponseCar {
 
 	var finded []models.Car
 
 	results := GlobalHandler.Preload("Engine").Preload("Devices").Preload("OwnerList").Find(&finded, curModel)
 	if results.Error != nil {
-		return errors.New("FIGNYA dsgsd dsgdsgds")
+		return models.ResponseCarBadShow()
 	}
 
-	fmt.Println(finded)
-	return errors.New("OFIGENNO dsgsdg sdsgsd g")
+	return models.ResponseCarGoodShow(finded)
 }

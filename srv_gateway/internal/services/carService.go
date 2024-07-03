@@ -3,7 +3,6 @@ package services
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"log"
 	"module/internal/models"
 	"time"
@@ -114,7 +113,7 @@ func SendcarInsert(c *fiber.Ctx) error {
 	curCar = firstTest()
 
 	curCar.Types = "insert"
-	return DatabaseProducing(curCar)
+	return DatabaseProducing(c, curCar)
 }
 
 func SendcarShow(c *fiber.Ctx) error {
@@ -134,7 +133,7 @@ func SendcarShow(c *fiber.Ctx) error {
 
 	curCar.Mark = "Lada"
 	curCar.Types = "show"
-	return DatabaseProducing(curCar)
+	return DatabaseProducing(c, curCar)
 
 	// return c.SendStatus(fiber.StatusAccepted)
 }
@@ -163,7 +162,7 @@ func SendcarDelete(c *fiber.Ctx) error {
 	return c.SendStatus(fiber.StatusAccepted)
 }
 
-func DatabaseProducing(curCar models.CarToRM) error {
+func DatabaseProducing(c *fiber.Ctx, curCar models.CarToRM) error {
 	conn, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
 	handleError(err, "Failed to connect to RabbitMQ")
 	defer conn.Close()
@@ -217,14 +216,35 @@ func DatabaseProducing(curCar models.CarToRM) error {
 	for d := range msgs {
 		if corrId == d.CorrelationId {
 
-			addTasks := &models.ResponseStr{}
+			addTasks := &models.ResponseCar{}
 			json.Unmarshal(d.Body, addTasks)
 
-			return errors.New(addTasks.Description)
+			return returnResponse(c, addTasks)
+
 		}
 	}
 
-	return errors.New("bad sdfs")
+	return models.ResponseBadRequest()
+}
+
+func returnResponse(c *fiber.Ctx, res *models.ResponseCar) error {
+
+	if res.Description == models.ResponseCarGoodCreate().Description {
+		return c.Status(fiber.StatusAccepted).JSON(fiber.Map{"status": res.Description, "code": res.Code})
+	}
+	if res.Description == models.ResponseCarBadCreate().Description {
+		return c.Status(fiber.StatusAccepted).JSON(fiber.Map{"status": res.Description, "code": res.Code})
+	}
+
+	if res.Description == models.ResponseCarGoodShow([]models.Car{}).Description {
+		return c.Status(fiber.StatusAccepted).JSON(fiber.Map{"status": res.Description, "code": res.Code, "data": res.Cars})
+	}
+	if res.Description == models.ResponseCarBadShow().Description {
+		return c.Status(fiber.StatusAccepted).JSON(fiber.Map{"status": res.Description, "code": res.Code})
+	}
+
+	return c.SendStatus(fiber.StatusAccepted)
+
 }
 
 func handleError(err error, msg string) {

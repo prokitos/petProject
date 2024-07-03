@@ -69,11 +69,7 @@ func Consuming() {
 				return
 			}
 
-			GatewayCar(addTask)
-
-			var resp models.ResponseStr
-			resp.Description = "jorasad"
-			resp.Code = 2002
+			resp := GatewayCar(addTask)
 			temp, err := json.Marshal(resp)
 
 			err = ch.PublishWithContext(ctx,
@@ -96,7 +92,7 @@ func Consuming() {
 	<-forever
 }
 
-func GatewayCar(car *models.CarToRM) error {
+func GatewayCar(car *models.CarToRM) models.ResponseCar {
 
 	types := car.Types
 
@@ -114,5 +110,5 @@ func GatewayCar(car *models.CarToRM) error {
 		return services.CarShow(tempCar)
 	}
 
-	return nil
+	return models.ResponseCarUnsupported()
 }

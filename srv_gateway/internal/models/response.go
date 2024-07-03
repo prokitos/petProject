@@ -14,8 +14,46 @@ func ResponseBadRequest() error {
 	return errors.New("bad request")
 }
 
-type ResponseStr struct {
+type ResponseCar struct {
 	Description string `json:"description"        example:"description"`
 	Code        int    `json:"code"               example:"status"`
 	Cars        []Car  `json:"cars"               example:"...."`
+}
+
+func ResponseCarGoodCreate() ResponseCar {
+	var resp ResponseCar
+	resp.Code = 200
+	resp.Description = "car create success"
+	resp.Cars = nil
+	return resp
+}
+func ResponseCarBadCreate() ResponseCar {
+	var resp ResponseCar
+	resp.Code = 400
+	resp.Description = "car create failed"
+	resp.Cars = nil
+	return resp
+}
+
+func ResponseCarBadShow() ResponseCar {
+	var resp ResponseCar
+	resp.Code = 400
+	resp.Description = "car get failed"
+	resp.Cars = nil
+	return resp
+}
+func ResponseCarGoodShow(cars []Car) ResponseCar {
+	var resp ResponseCar
+	resp.Code = 200
+	resp.Description = "car get success"
+	resp.Cars = cars
+	return resp
+}
+
+func ResponseCarUnsupported() ResponseCar {
+	var resp ResponseCar
+	resp.Code = 404
+	resp.Description = "unexpected error"
+	resp.Cars = nil
+	return resp
 }

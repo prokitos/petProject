@@ -35,8 +35,7 @@ func carUpdate(c *fiber.Ctx) error {
 	res := tokenAccess(c)
 
 	if res.Error() == errors.New("token useful").Error() {
-		services.SendcarUpdate(c)
-		return c.SendStatus(fiber.StatusAccepted)
+		return services.SendcarUpdate(c)
 	}
 
 	return c.SendStatus(fiber.StatusBadRequest)
@@ -47,8 +46,7 @@ func carDelete(c *fiber.Ctx) error {
 	res := tokenAccess(c)
 
 	if res.Error() == errors.New("token useful").Error() {
-		services.SendcarDelete(c)
-		return c.SendStatus(fiber.StatusAccepted)
+		return services.SendcarDelete(c)
 	}
 
 	return c.SendStatus(fiber.StatusBadRequest)

@@ -57,3 +57,35 @@ func ResponseCarUnsupported() ResponseCar {
 	resp.Cars = nil
 	return resp
 }
+
+func ResponseCarBadDelete() ResponseCar {
+	var resp ResponseCar
+	resp.Code = 400
+	resp.Description = "nothing to delete"
+	resp.Cars = nil
+	return resp
+}
+
+func ResponseCarGoodDelete() ResponseCar {
+	var resp ResponseCar
+	resp.Code = 200
+	resp.Description = "delete success"
+	resp.Cars = nil
+	return resp
+}
+
+func ResponseCarBadUpdate() ResponseCar {
+	var resp ResponseCar
+	resp.Code = 400
+	resp.Description = "error at update"
+	resp.Cars = nil
+	return resp
+}
+
+func ResponseCarGoodUpdate() ResponseCar {
+	var resp ResponseCar
+	resp.Code = 200
+	resp.Description = "success update"
+	resp.Cars = nil
+	return resp
+}

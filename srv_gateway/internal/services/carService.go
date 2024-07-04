@@ -104,12 +104,8 @@ func secondTest() models.CarToRM {
 func SendcarInsert(c *fiber.Ctx) error {
 
 	var curCar models.CarToRM
-	// if err := c.BodyParser(&curCar); err != nil {
-	// 	return c.SendStatus(fiber.StatusBadRequest)
-	// }
 
 	// тестовые данные
-
 	curCar = firstTest()
 
 	curCar.Types = "insert"
@@ -119,47 +115,38 @@ func SendcarInsert(c *fiber.Ctx) error {
 func SendcarShow(c *fiber.Ctx) error {
 
 	var curCar models.CarToRM
-	// curCar.Id = c.Query("id", "")
-	// curCar.RegNum = c.Query("regNum")
-	// curCar.Mark = c.Query("mark")
-	// curCar.Model = c.Query("model")
-	// curCar.Year = c.Query("year")
-	// curCar.Owner.Name = c.Query("name")
-	// curCar.Owner.Surname = c.Query("surname")
-	// curCar.Owner.Patronymic = c.Query("patronymic")
 
-	// curCar.Types = "show"
-	// DatabaseProducing(curCar)
-
+	// тестовые данные
 	curCar.Mark = "Lada"
+
 	curCar.Types = "show"
 	return DatabaseProducing(c, curCar)
-
-	// return c.SendStatus(fiber.StatusAccepted)
 }
 
 func SendcarUpdate(c *fiber.Ctx) error {
 
-	// var curCar models.CarToRM
-	// if err := c.BodyParser(&curCar); err != nil {
-	// 	return c.SendStatus(fiber.StatusBadRequest)
-	// }
+	var curCar models.CarToRM
 
-	// curCar.Types = "update"
-	// DatabaseProducing(curCar)
+	// тестовые данные
+	curCar.Color = "green"
+	curCar.MaxSpeed = 155
+	curCar.Id = 2
 
-	return c.SendStatus(fiber.StatusAccepted)
+	curCar.Types = "update"
+	return DatabaseProducing(c, curCar)
 }
 
 func SendcarDelete(c *fiber.Ctx) error {
 
-	// var curCar models.CarToRM
-	// curCar.Id = c.Query("id", "")
+	var curCar models.CarToRM
 
-	// curCar.Types = "delete"
-	// DatabaseProducing(curCar)
+	// тестовые данные
+	curCar.Color = "red"
+	curCar.MaxSpeed = 140
+	curCar.Id = 3
 
-	return c.SendStatus(fiber.StatusAccepted)
+	curCar.Types = "delete"
+	return DatabaseProducing(c, curCar)
 }
 
 func DatabaseProducing(c *fiber.Ctx, curCar models.CarToRM) error {
@@ -240,6 +227,20 @@ func returnResponse(c *fiber.Ctx, res *models.ResponseCar) error {
 		return c.Status(fiber.StatusAccepted).JSON(fiber.Map{"status": res.Description, "code": res.Code, "data": res.Cars})
 	}
 	if res.Description == models.ResponseCarBadShow().Description {
+		return c.Status(fiber.StatusAccepted).JSON(fiber.Map{"status": res.Description, "code": res.Code})
+	}
+
+	if res.Description == models.ResponseCarBadDelete().Description {
+		return c.Status(fiber.StatusAccepted).JSON(fiber.Map{"status": res.Description, "code": res.Code})
+	}
+	if res.Description == models.ResponseCarGoodDelete().Description {
+		return c.Status(fiber.StatusAccepted).JSON(fiber.Map{"status": res.Description, "code": res.Code})
+	}
+
+	if res.Description == models.ResponseCarBadUpdate().Description {
+		return c.Status(fiber.StatusAccepted).JSON(fiber.Map{"status": res.Description, "code": res.Code})
+	}
+	if res.Description == models.ResponseCarGoodUpdate().Description {
 		return c.Status(fiber.StatusAccepted).JSON(fiber.Map{"status": res.Description, "code": res.Code})
 	}
 

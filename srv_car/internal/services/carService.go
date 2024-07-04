@@ -1,7 +1,6 @@
 package services
 
 import (
-	"fmt"
 	"module/internal/database"
 	"module/internal/models"
 )
@@ -9,22 +8,16 @@ import (
 func CarInsert(curCar models.Car) models.ResponseCar {
 
 	return database.CreateNewCar(curCar)
-
 }
 
 func CarDelete(curCar models.Car) models.ResponseCar {
 
-	fmt.Println("delete", curCar.Id)
-
-	return models.ResponseCar{}
-
+	return database.DeleteCar(curCar)
 }
 
 func CarUpdate(curCar models.Car) models.ResponseCar {
 
-	fmt.Println("update", curCar.Id)
-
-	return models.ResponseCar{}
+	return database.UpdateCar(curCar)
 }
 
 func CarShow(curCar models.Car) models.ResponseCar {

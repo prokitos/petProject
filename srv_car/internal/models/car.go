@@ -13,6 +13,7 @@ type Car struct {
 	Engine    CarEngine           `json:"engine" example:"" gorm:"foreignKey:Owner;references:Id"`
 	Devices   []AdditionalDevices `json:"devices" example:"" gorm:"foreignKey:Owner;references:Id"`                                                                               // один ко многим
 	OwnerList []People            `json:"all_owners" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;many2many:owners_bounds;joinForeignKey:car_uid;JoinReferences:owner_uid"` // много ко многим
+	Status    string              `json:"status"`                                                                                                                                 // (sold / for sale)
 }
 
 type CarEngine struct {

@@ -1,7 +1,6 @@
 package services
 
 import (
-	"errors"
 	"module/internal/models"
 
 	"github.com/gofiber/fiber/v2"
@@ -15,7 +14,7 @@ func Register(c *fiber.Ctx) error {
 	sendData.PasswordConfirm = c.Query("password_confirm", "")
 
 	res, err := sendToAuth(c, sendData, "/register")
-	if err.Error() != errors.New("good").Error() {
+	if err.Error() != models.ResponseGood().Error() {
 		return c.Status(fiber.StatusCreated).JSON(fiber.Map{"status": err.Error()})
 	}
 
@@ -29,7 +28,7 @@ func Authorization(c *fiber.Ctx) error {
 	sendData.Password = c.Query("password", "")
 
 	res, err := sendToAuth(c, sendData, "/login")
-	if err.Error() != errors.New("good").Error() {
+	if err.Error() != models.ResponseGood().Error() {
 		return c.Status(fiber.StatusCreated).JSON(fiber.Map{"status": err.Error()})
 	}
 

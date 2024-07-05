@@ -18,7 +18,7 @@ func OpenConnection(config models.ConnectConfig) {
 
 	db, err := gorm.Open(postgres.Open(connectStr), &gorm.Config{})
 	if err != nil {
-		log.Fatalln(err)
+		panic("not connection to db")
 	}
 
 	GlobalHandler = db

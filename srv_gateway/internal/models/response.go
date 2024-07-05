@@ -89,3 +89,19 @@ func ResponseCarGoodUpdate() ResponseCar {
 	resp.Cars = nil
 	return resp
 }
+
+func ResponseTokenGood() error {
+	return errors.New("token is useful")
+}
+
+func ResponseConnectError() error {
+	return errors.New("not connection to external services")
+}
+
+func ResponseEncodingError() error {
+	return errors.New("error encoding response of server")
+}
+
+func ResponseTokenExpired() error {
+	return errors.New("token is expired")
+}

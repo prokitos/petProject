@@ -31,7 +31,7 @@ func sendToAuth(c *fiber.Ctx, sendData models.TokenResponser, supAddress string)
 	resp, err := client.PostForm(baseURL.String(), params)
 	if err != nil {
 		fmt.Println("no connect to auth service")
-		return models.Tokens{}, errors.New("not connection to external service")
+		return models.Tokens{}, models.ResponseConnectError()
 	}
 
 	defer resp.Body.Close()
@@ -60,14 +60,14 @@ func sendTokenToCheck(c *fiber.Ctx, token string, supAddress string) error {
 	resp, err := client.Do(req)
 	if err != nil {
 		fmt.Println("no connect to auth service")
-		return errors.New("not connection to external service")
+		return models.ResponseConnectError()
 	}
 	defer resp.Body.Close()
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		fmt.Println("error reading byte")
-		return errors.New("error encoding response of server")
+		return models.ResponseEncodingError()
 	}
 
 	var instance models.ExternalStruct

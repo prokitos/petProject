@@ -1,8 +1,6 @@
 package services
 
 import (
-	"errors"
-	"fmt"
 	"module/internal/database"
 	"module/internal/models"
 
@@ -16,13 +14,13 @@ func Authorization(c *fiber.Ctx) (models.TokenResponser, error) {
 	curUser.Password = c.Query("password", "")
 
 	if len(curUser.Login) < 5 || len(curUser.Password) < 5 {
-		return models.TokenResponser{}, errors.New("an error")
+		return models.TokenResponser{}, models.ResponseBadRequest()
 	}
 
 	// проверка пользователя и его уровня доступа. потом генерация токена
 	curUser, err := database.GetExistingUser(c, curUser)
 	if err != nil {
-		return models.TokenResponser{}, errors.New("an error")
+		return models.TokenResponser{}, models.ResponseBadRequest()
 	}
 
 	res := TokenGetPair(curUser)
@@ -31,10 +29,10 @@ func Authorization(c *fiber.Ctx) (models.TokenResponser, error) {
 	// записываем новый рефреш токен в базу
 	err = database.UpdateRefreshToken(c, curUser)
 	if err != nil {
-		return models.TokenResponser{}, errors.New("error to add refresh token")
+		return models.TokenResponser{}, models.ResponseTokenError()
 	}
 
-	return res, errors.New("good")
+	return res, models.ResponseGood()
 }
 
 func Registration(c *fiber.Ctx) (models.TokenResponser, error) {
@@ -44,10 +42,10 @@ func Registration(c *fiber.Ctx) (models.TokenResponser, error) {
 	confirmPassword := c.Query("password_confirm", "")
 
 	if password != confirmPassword {
-		return models.TokenResponser{}, errors.New("an error")
+		return models.TokenResponser{}, models.ResponseBadRequest()
 	}
 	if len(login) < 5 || len(password) < 5 {
-		return models.TokenResponser{}, errors.New("an error")
+		return models.TokenResponser{}, models.ResponseBadRequest()
 	}
 
 	var curUser models.Users
@@ -61,16 +59,14 @@ func Registration(c *fiber.Ctx) (models.TokenResponser, error) {
 	// проверка что нет пользователя с таким именем
 	err := database.CheckUserName(c, models.Users{Login: login})
 	if err != nil {
-		fmt.Println("случилась ошибка!()")
-		return models.TokenResponser{}, errors.New("already has user with current login")
+		return models.TokenResponser{}, models.ResponseUserExist()
 	}
 
 	// создание нового пользователя с 1 уровнем доступа. потом генерация токена
 	curUser, err = database.CreateNewUser(c, curUser)
 	if err != nil {
-		fmt.Println("случилась ошибка!()")
-		return models.TokenResponser{}, errors.New("an error")
+		return models.TokenResponser{}, models.ResponseTokenError()
 	}
 
-	return res, errors.New("good")
+	return res, models.ResponseGood()
 }

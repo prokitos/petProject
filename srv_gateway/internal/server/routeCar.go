@@ -1,7 +1,7 @@
 package server
 
 import (
-	"errors"
+	"module/internal/models"
 	"module/internal/services"
 
 	"github.com/gofiber/fiber/v2"
@@ -11,43 +11,42 @@ func carInsert(c *fiber.Ctx) error {
 
 	res := tokenAccess(c)
 
-	if res.Error() == errors.New("token useful").Error() {
-		services.SendcarInsert(c)
-		return c.SendStatus(fiber.StatusAccepted)
+	if res.Error() == models.ResponseTokenGood().Error() {
+		return services.SendcarInsert(c)
 	}
 
-	return c.SendStatus(fiber.StatusBadRequest)
+	return models.ResponseTokenExpired()
 }
 
 func carShow(c *fiber.Ctx) error {
 
 	res := tokenAccess(c)
 
-	if res.Error() == errors.New("token useful").Error() {
+	if res.Error() == models.ResponseTokenGood().Error() {
 		return services.SendcarShow(c)
 	}
 
-	return c.SendStatus(fiber.StatusBadRequest)
+	return models.ResponseTokenExpired()
 }
 
 func carUpdate(c *fiber.Ctx) error {
 
 	res := tokenAccess(c)
 
-	if res.Error() == errors.New("token useful").Error() {
+	if res.Error() == models.ResponseTokenGood().Error() {
 		return services.SendcarUpdate(c)
 	}
 
-	return c.SendStatus(fiber.StatusBadRequest)
+	return models.ResponseTokenExpired()
 }
 
 func carDelete(c *fiber.Ctx) error {
 
 	res := tokenAccess(c)
 
-	if res.Error() == errors.New("token useful").Error() {
+	if res.Error() == models.ResponseTokenGood().Error() {
 		return services.SendcarDelete(c)
 	}
 
-	return c.SendStatus(fiber.StatusBadRequest)
+	return models.ResponseTokenExpired()
 }

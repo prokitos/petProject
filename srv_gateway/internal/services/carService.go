@@ -216,10 +216,7 @@ func DatabaseProducing(c *fiber.Ctx, curCar models.CarToRM) error {
 
 func returnResponse(c *fiber.Ctx, res *models.ResponseCar) error {
 
-	if res.Description == models.ResponseCarGoodCreate().Description {
-		return c.Status(fiber.StatusAccepted).JSON(fiber.Map{"status": res.Description, "code": res.Code})
-	}
-	if res.Description == models.ResponseCarBadCreate().Description {
+	if res.Description == models.ResponseCarGoodCreate().Description || res.Description == models.ResponseCarBadCreate().Description {
 		return c.Status(fiber.StatusAccepted).JSON(fiber.Map{"status": res.Description, "code": res.Code})
 	}
 
@@ -230,17 +227,11 @@ func returnResponse(c *fiber.Ctx, res *models.ResponseCar) error {
 		return c.Status(fiber.StatusAccepted).JSON(fiber.Map{"status": res.Description, "code": res.Code})
 	}
 
-	if res.Description == models.ResponseCarBadDelete().Description {
-		return c.Status(fiber.StatusAccepted).JSON(fiber.Map{"status": res.Description, "code": res.Code})
-	}
-	if res.Description == models.ResponseCarGoodDelete().Description {
+	if res.Description == models.ResponseCarBadDelete().Description || res.Description == models.ResponseCarGoodDelete().Description {
 		return c.Status(fiber.StatusAccepted).JSON(fiber.Map{"status": res.Description, "code": res.Code})
 	}
 
-	if res.Description == models.ResponseCarBadUpdate().Description {
-		return c.Status(fiber.StatusAccepted).JSON(fiber.Map{"status": res.Description, "code": res.Code})
-	}
-	if res.Description == models.ResponseCarGoodUpdate().Description {
+	if res.Description == models.ResponseCarBadUpdate().Description || res.Description == models.ResponseCarGoodUpdate().Description {
 		return c.Status(fiber.StatusAccepted).JSON(fiber.Map{"status": res.Description, "code": res.Code})
 	}
 

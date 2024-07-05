@@ -8,14 +8,14 @@ import (
 
 func loginRoute(c *fiber.Ctx) error {
 
-	services.Authorization(c)
-	return c.SendStatus(fiber.StatusAccepted)
+	return services.Authorization(c)
+	// return c.SendStatus(fiber.StatusAccepted)
 }
 
 func registerRoute(c *fiber.Ctx) error {
 
-	services.Register(c)
-	return c.SendStatus(fiber.StatusAccepted)
+	return services.Register(c)
+	// return c.SendStatus(fiber.StatusAccepted)
 }
 
 func tokenAccess(c *fiber.Ctx) error {

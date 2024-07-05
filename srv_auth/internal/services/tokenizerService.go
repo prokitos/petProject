@@ -29,16 +29,16 @@ func TokenGetPair(curUser models.Users) models.TokenResponser {
 	return responser
 }
 
-func TokenGetAccess(curUser models.Users) models.TokenResponser {
-	var access string = createTokenAccess(curUser)
+// func TokenGetAccess(curUser models.Users) models.TokenResponser {
+// 	var access string = createTokenAccess(curUser)
 
-	responser := models.TokenResponser{
-		AccessToken:  access,
-		RefreshToken: "",
-	}
+// 	responser := models.TokenResponser{
+// 		AccessToken:  access,
+// 		RefreshToken: "",
+// 	}
 
-	return responser
-}
+// 	return responser
+// }
 
 // создание аксес токена.
 func createTokenAccess(curUser models.Users) string {
@@ -57,7 +57,7 @@ func createTokenAccess(curUser models.Users) string {
 	tokenString, err := token.SignedString(AccessKey)
 	if err != nil {
 		log.Error("token dont signed")
-		return ""
+		return models.ResponseTokenError().Error()
 	}
 
 	// возвращаем
@@ -82,7 +82,7 @@ func createTokenRefresh(curUser models.Users, accessToken string) string {
 	tokenString, err := token.SignedString(RefreshKey)
 	if err != nil {
 		log.Error("token dont signed")
-		return ""
+		return models.ResponseTokenError().Error()
 	}
 
 	return tokenString
@@ -94,17 +94,17 @@ func TokenAccessValidate(bearer string) string {
 	token, err := validateAccessToken(bearer)
 	if err != nil {
 		if err == jwt.ErrSignatureInvalid {
-			return "unathorized"
+			return models.ResponseTokenUnauthorized().Error()
 		}
-		return "unathorized"
+		return models.ResponseTokenUnauthorized().Error()
 	}
 
 	if !token.Valid {
-		return "token expired"
+		return models.ResponseTokenExpired().Error()
 	}
 
 	// токен валиден. вернуть результат
-	return "token useful"
+	return models.ResponseTokenGood().Error()
 
 }
 
@@ -114,17 +114,17 @@ func TokenRefreshValidate(bearer string) string {
 	token, err := validateAccessToken(bearer)
 	if err != nil {
 		if err == jwt.ErrSignatureInvalid {
-			return "unathorized"
+			return models.ResponseTokenUnauthorized().Error()
 		}
-		return "unathorized"
+		return models.ResponseTokenUnauthorized().Error()
 	}
 
 	if !token.Valid {
-		return "token expired"
+		return models.ResponseTokenExpired().Error()
 	}
 
 	// токен валиден. вернуть результат
-	return "token useful"
+	return models.ResponseTokenGood().Error()
 
 }
 
@@ -133,13 +133,13 @@ func GetAccessTokenFromRefresh(bearer string) string {
 	token, err := validateRefreshToken(bearer)
 	if err != nil {
 		if err == jwt.ErrSignatureInvalid {
-			return "unathorized"
+			return models.ResponseTokenUnauthorized().Error()
 		}
-		return "unathorized"
+		return models.ResponseTokenUnauthorized().Error()
 	}
 
 	if !token.Valid {
-		return "token expired"
+		return models.ResponseTokenExpired().Error()
 	}
 
 	// токен валиден. вернуть новый аксес токен

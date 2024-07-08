@@ -3,112 +3,27 @@ package services
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"log"
 	"module/internal/models"
+	"strconv"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
 	amqp "github.com/rabbitmq/amqp091-go"
 )
 
-func firstTest() models.CarToRM {
-
-	var curCar models.CarToRM
-	var NewDevices []models.AdditionalDevices
-	var dev1 models.AdditionalDevices
-	var dev2 models.AdditionalDevices
-	dev1.DeviceName = "ParkMaster"
-	dev2.DeviceName = "DVR"
-	NewDevices = append(NewDevices, dev1)
-	NewDevices = append(NewDevices, dev2)
-
-	var CarEngine models.CarEngine
-	CarEngine.EngineCapacity = 450
-	CarEngine.EnginePower = 120
-
-	var Owner models.People
-	Owner.Email = "owenrMail"
-	Owner.Name = "ivan"
-	Owner.Surname = "zhilov"
-
-	var AllOwners []models.People
-	var own1 models.People
-	var own2 models.People
-	own1.Email = "firster"
-	own1.Name = "nikita"
-	own1.Surname = "nikitov"
-	own2.Email = "tesst"
-	own2.Name = "jora"
-	own2.Surname = "sinikov"
-	AllOwners = append(AllOwners, own1)
-	AllOwners = append(AllOwners, own2)
-
-	curCar.Mark = "Lada"
-	curCar.Year = "2010"
-	curCar.Price = 2450000
-	curCar.Color = "red"
-	curCar.MaxSpeed = 140
-	curCar.SeatsNum = 4
-	curCar.Engine = CarEngine
-	curCar.Devices = NewDevices
-	curCar.OwnerList = AllOwners
-
-	return curCar
-}
-
-func secondTest() models.CarToRM {
-
-	var curCar models.CarToRM
-	var NewDevices []models.AdditionalDevices
-	var dev1 models.AdditionalDevices
-	var dev2 models.AdditionalDevices
-	dev1.DeviceName = "Fignya"
-	dev2.DeviceName = "DVR"
-	NewDevices = append(NewDevices, dev1)
-	NewDevices = append(NewDevices, dev2)
-
-	var CarEngine models.CarEngine
-	CarEngine.EngineCapacity = 999
-	CarEngine.EnginePower = 111
-
-	var Owner models.People
-	Owner.Email = "sdg436t"
-	Owner.Name = "shulua"
-	Owner.Surname = "dashokv"
-
-	var AllOwners []models.People
-	var own1 models.People
-	var own2 models.People
-	own1.Email = "qqwe"
-	own1.Name = "qwrqw"
-	own1.Surname = "qwwqr"
-	own2.Email = "poipoi"
-	own2.Name = "poipio"
-	own2.Surname = "oipipi"
-	AllOwners = append(AllOwners, own1)
-	AllOwners = append(AllOwners, own2)
-
-	curCar.Mark = "Ladina"
-	curCar.Year = "2011"
-	curCar.Price = 2450000
-	curCar.Color = "reds"
-	curCar.MaxSpeed = 166
-	curCar.SeatsNum = 4
-	curCar.Engine = CarEngine
-	curCar.Devices = NewDevices
-	curCar.OwnerList = AllOwners
-
-	return curCar
-}
-
 func SendcarInsert(c *fiber.Ctx) error {
 
 	var curCar models.CarToRM
 
-	// тестовые данные
-	curCar = firstTest()
+	if err := c.BodyParser(&curCar); err != nil {
+		return models.ResponseBadRequest()
+	}
 
 	curCar.Types = "insert"
+	fmt.Println(curCar)
+
 	return DatabaseProducing(c, curCar)
 }
 
@@ -116,8 +31,14 @@ func SendcarShow(c *fiber.Ctx) error {
 
 	var curCar models.CarToRM
 
-	// тестовые данные
-	curCar.Mark = "Lada"
+	curCar.Id, _ = strconv.Atoi(c.Query("id"))
+	curCar.Mark = c.Query("mark", "")
+	curCar.Year = c.Query("year", "")
+	curCar.Price, _ = strconv.Atoi(c.Query("price", ""))
+	curCar.Color = c.Query("color", "")
+	curCar.MaxSpeed, _ = strconv.Atoi(c.Query("max_speed", ""))
+	curCar.SeatsNum, _ = strconv.Atoi(c.Query("seat_num", ""))
+	curCar.Status = c.Query("status", "")
 
 	curCar.Types = "show"
 	return DatabaseProducing(c, curCar)
@@ -127,12 +48,13 @@ func SendcarUpdate(c *fiber.Ctx) error {
 
 	var curCar models.CarToRM
 
-	// тестовые данные
-	curCar.Color = "green"
-	curCar.MaxSpeed = 155
-	curCar.Id = 2
+	if err := c.BodyParser(&curCar); err != nil {
+		return models.ResponseBadRequest()
+	}
 
 	curCar.Types = "update"
+	fmt.Println(curCar)
+
 	return DatabaseProducing(c, curCar)
 }
 
@@ -140,10 +62,14 @@ func SendcarDelete(c *fiber.Ctx) error {
 
 	var curCar models.CarToRM
 
-	// тестовые данные
-	curCar.Color = "red"
-	curCar.MaxSpeed = 140
-	curCar.Id = 3
+	curCar.Id, _ = strconv.Atoi(c.Query("id"))
+	curCar.Mark = c.Query("mark", "")
+	curCar.Year = c.Query("year", "")
+	curCar.Price, _ = strconv.Atoi(c.Query("price", ""))
+	curCar.Color = c.Query("color", "")
+	curCar.MaxSpeed, _ = strconv.Atoi(c.Query("max_speed", ""))
+	curCar.SeatsNum, _ = strconv.Atoi(c.Query("seat_num", ""))
+	curCar.Status = c.Query("status", "")
 
 	curCar.Types = "delete"
 	return DatabaseProducing(c, curCar)

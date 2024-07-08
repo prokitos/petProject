@@ -32,7 +32,7 @@ func DeleteCar(curModel models.Car) models.ResponseCar {
 
 	var curCar models.Car
 
-	result := GlobalHandler.Delete(&curCar, "id = ?", curModel.Id)
+	result := GlobalHandler.Where(curModel).Delete(curCar)
 
 	if result.RowsAffected == 0 || result.Error != nil {
 		return models.ResponseCarBadDelete()
@@ -47,9 +47,22 @@ func UpdateCar(curModel models.Car) models.ResponseCar {
 	id := curModel.Id
 	var curCar models.Car
 
-	if GlobalHandler.Model(&curCar).Where("id = ?", id).Updates(&curModel).RowsAffected == 0 {
+	if result := GlobalHandler.Preload("Engine").First(&curCar, id); result.Error != nil {
 		return models.ResponseCarBadUpdate()
 	}
+
+	curCar = curModel
+
+	GlobalHandler.Save(&curCar)
+
+	//if GlobalHandler.Model(&curCar).Where("id = ?", id).Updates(&curModel).RowsAffected == 0 {
+
+	// if gorm.IsRecordNotFoundError(err){
+	// 	db.Create(&newUser)  // create new record
+	// }
+
+	// 	return models.ResponseCarBadUpdate()
+	// }
 
 	// Send a 201 created response
 	return models.ResponseCarGoodUpdate()

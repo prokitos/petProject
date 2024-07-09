@@ -1,6 +1,8 @@
 package models
 
-import "time"
+import (
+	"time"
+)
 
 type Car struct {
 	Id        int                 `json:"car_id" example:"" gorm:"unique;primaryKey;autoIncrement"`
@@ -10,8 +12,8 @@ type Car struct {
 	Color     string              `json:"color" example:""`
 	MaxSpeed  int                 `json:"speed" example:""`
 	SeatsNum  int                 `json:"seats" example:""`
-	Engine    CarEngine           `json:"engine" example:"" gorm:"foreignKey:Owner;references:Id"`
-	Devices   []AdditionalDevices `json:"devices" example:"" gorm:"foreignKey:Owner;references:Id"`                                                                               // один ко многим
+	Engine    CarEngine           `json:"engine" example:"" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;foreignKey:Owner;references:Id"`
+	Devices   []AdditionalDevices `json:"devices" example:"" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;foreignKey:Owner;references:Id"`                                  // один ко многим
 	OwnerList []People            `json:"all_owners" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;many2many:owners_bounds;joinForeignKey:car_uid;JoinReferences:owner_uid"` // много ко многим
 	Status    string              `json:"status"`                                                                                                                                 // (sold / for sale)
 }

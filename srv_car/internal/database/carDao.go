@@ -61,6 +61,11 @@ func UpdateCar(curModel models.Car) models.ResponseCar {
 
 	GlobalHandler.Model(models.Car{}).Where("id = ?", curCar.Id).Updates(&curModel)
 
+	//if GlobalHandler.Model(&curCar).Where("id = ?", id).Updates(&curModel).RowsAffected == 0 {
+	// if gorm.IsRecordNotFoundError(err){
+	// 	db.Create(&newUser)  // create new record
+	// }
+
 	// Send a 201 created response
 	return models.ResponseCarGoodUpdate()
 }

@@ -25,7 +25,7 @@ func EnrichtedOwner() []models.People {
 		var curUser models.People
 		curUser.Name = nameMap[randRange(1, len(nameMap))]
 		curUser.Surname = surnMap[randRange(1, len(surnMap))]
-		curUser.Email = curUser.Name + strconv.Itoa(randRange(1800, 2000)) + surnMap[randRange(1, len(mailMap))]
+		curUser.Email = curUser.Name + strconv.Itoa(randRange(1800, 2000)) + mailMap[randRange(1, len(mailMap))]
 
 		peoples = append(peoples, curUser)
 	}

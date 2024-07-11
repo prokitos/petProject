@@ -3,6 +3,7 @@ package app
 import (
 	"fmt"
 	"module/internal/models"
+	"module/internal/server"
 	"net"
 	"strconv"
 
@@ -18,6 +19,7 @@ type App struct {
 func (a *App) NewServer(port models.ServerConfig) {
 
 	gRPCserver := grpc.NewServer()
+	server.Register(gRPCserver)
 	a.GRPCserver = gRPCserver
 	innerPort, err := strconv.Atoi(port.Port)
 	if err != nil {

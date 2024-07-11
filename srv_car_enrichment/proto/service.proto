@@ -1,0 +1,57 @@
+syntax = "proto3";
+
+package enrichment;
+
+option go_package = "tuzov.sso.v1;ssov1";
+
+service enrichment{
+    rpc CarEnricht (CarRequest) returns (CarResponse);
+}
+
+message CarRequest {
+    int64                   Id = 1;    
+	string                Mark = 2;   
+    string                Year = 3;
+	int64                   Price = 4;
+	string                Color = 5;
+	int64                   MaxSpeed = 6;
+	int64                   SeatsNum = 7;
+	string                Status = 8;  
+}
+
+message CarResponse {
+    int64                   Id = 1;    
+	string                Mark = 2;   
+    string                Year = 3;
+	int64                   Price = 4;
+	string                Color = 5;
+	int64                   MaxSpeed = 6;
+	int64                   SeatsNum = 7;
+	CarEngine             Engine = 8;
+	AdditionalDevices     Devices = 9;
+	People                OwnerList = 10;
+	string                Status = 11;  
+}
+
+
+
+message AdditionalDevices {
+    int64 Id = 1;
+    string DeviceName = 2;
+    int64 Owner = 3;
+}
+
+
+message CarEngine {
+    int64 Id = 1;
+    float EngineCapacity = 2;
+    float EnginePower = 3;
+    int64 Owner = 4;
+}
+
+message People {
+    int64 Id = 1;
+    string Name = 2;
+    string Surname = 3;
+    string Email = 4;
+}

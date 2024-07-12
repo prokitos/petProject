@@ -3,50 +3,14 @@ package services
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"log"
-	"module/internal/generpc"
 	"module/internal/models"
 	"strconv"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
 	amqp "github.com/rabbitmq/amqp091-go"
-	"google.golang.org/grpc"
 )
-
-func registerSend(c *fiber.Ctx, car models.CarToRM) error {
-
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*2)
-	defer cancel()
-
-	conn, err := grpc.Dial("localhost:8006", grpc.WithInsecure())
-	if err != nil {
-		return c.SendString("connecting error")
-	}
-	defer conn.Close()
-	client := generpc.NewEnrichmentClient(conn)
-
-	// var sendedData *generpc.CarRequest
-	// sendedData.Mark = car.Mark
-	// sendedData.Year = car.Year
-	// sendedData.Price = int64(car.Price)
-	// sendedData.Color = car.Color
-	// sendedData.MaxSpeed = int64(car.MaxSpeed)
-	// sendedData.SeatsNum = int64(car.SeatsNum)
-	// sendedData.Status = car.Status
-
-	response, err := client.CarEnricht(ctx, &generpc.CarRequest{})
-	if err != nil {
-		fmt.Println(err)
-		fmt.Println("too long. context time expired. more than 1 second.")
-		return c.SendString("long execution")
-	}
-
-	fmt.Println(response.Color)
-
-	return c.SendString("uraa")
-}
 
 func SendcarInsert(c *fiber.Ctx) error {
 
@@ -57,10 +21,8 @@ func SendcarInsert(c *fiber.Ctx) error {
 	}
 
 	curCar.Types = "insert"
-	fmt.Println(curCar)
 
-	return registerSend(c, curCar)
-	// return DatabaseProducing(c, curCar)
+	return DatabaseProducing(c, curCar)
 }
 
 func SendcarShow(c *fiber.Ctx) error {
@@ -89,7 +51,6 @@ func SendcarUpdate(c *fiber.Ctx) error {
 	}
 
 	curCar.Types = "update"
-	fmt.Println(curCar)
 
 	return DatabaseProducing(c, curCar)
 }

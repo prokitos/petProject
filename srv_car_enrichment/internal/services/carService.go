@@ -6,12 +6,6 @@ import (
 	"strconv"
 )
 
-///
-///
-/// ТУТ НАДО ПРОВЕРИТЬ ЧТО devNum не равно rands. вроде же нужно делать обновление перед каждым выводом? или только один раз?
-/// rand.Seed(time.Now().UnixNano())
-///
-
 func EnrichtedOwner() []models.People {
 
 	var nameMap = map[int]string{1: "Ivan", 2: "Sergey", 3: "Oleg", 4: "Anton", 5: "Dima", 6: "Sasha", 7: "Nikita", 8: "Slava", 9: "Kostya"}

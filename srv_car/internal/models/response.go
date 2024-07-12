@@ -14,6 +14,10 @@ func ResponseBadRequest() error {
 	return errors.New("bad request")
 }
 
+func ResponseConnectionError() error {
+	return errors.New("connection error")
+}
+
 type ResponseCar struct {
 	Description string `json:"description"        example:"description"`
 	Code        int    `json:"code"               example:"status"`

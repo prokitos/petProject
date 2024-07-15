@@ -29,16 +29,37 @@ func TokenGetPair(curUser models.Users) models.TokenResponser {
 	return responser
 }
 
-// func TokenGetAccess(curUser models.Users) models.TokenResponser {
-// 	var access string = createTokenAccess(curUser)
+func GetUserFromRefresh(refresh string, access string) (models.Users, error) {
 
-// 	responser := models.TokenResponser{
-// 		AccessToken:  access,
-// 		RefreshToken: "",
-// 	}
+	// проверка рефреш токена, валидность, попытка расшифровать его
+	token, err := validateRefreshToken(refresh)
+	if err != nil {
+		if err == jwt.ErrSignatureInvalid {
+			return models.Users{}, models.ResponseTokenDontRead()
+		}
+		return models.Users{}, models.ResponseTokenExpired()
+	}
 
-// 	return responser
-// }
+	// рефреш токен не валиден, неизвестная ошибка!!
+	if !token.Valid {
+		return models.Users{}, models.ResponseTokenError()
+	}
+
+	// токен валиден. вернуть новый аксес токен
+	user := token.Claims.(*models.RefreshToken)
+
+	// аксес токен не подходит к рефреш токену
+	accessed := strings.Split(access, " ")[1]
+	if user.AcceessToken != accessed {
+		return models.Users{}, models.ResponseTokenDontSame()
+	}
+
+	var temp models.Users
+	temp.Login = user.Login
+	temp.AccessLevel = user.AccessLevel
+
+	return temp, nil
+}
 
 // создание аксес токена.
 func createTokenAccess(curUser models.Users) string {
@@ -111,7 +132,7 @@ func TokenAccessValidate(bearer string) string {
 // метод для проведения проверки рефреш токена
 func TokenRefreshValidate(bearer string) string {
 
-	token, err := validateAccessToken(bearer)
+	token, err := validateRefreshToken(bearer)
 	if err != nil {
 		if err == jwt.ErrSignatureInvalid {
 			return models.ResponseTokenUnauthorized().Error()
@@ -167,7 +188,7 @@ func validateAccessToken(bearerToken string) (*jwt.Token, error) {
 // проверка валидности refresh токена
 func validateRefreshToken(bearerToken string) (*jwt.Token, error) {
 
-	tokenString := strings.Split(bearerToken, " ")[1] // мы получаем токен в виде "bearer HG4HGK4FDRH45" и поэтому мы тут убираем слово bearer и пробел
+	tokenString := strings.Split(bearerToken, " ")[0]
 	token, err := jwt.ParseWithClaims(tokenString, &models.RefreshToken{}, func(token *jwt.Token) (interface{}, error) {
 		return RefreshKey, nil
 	})

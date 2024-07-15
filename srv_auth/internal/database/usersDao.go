@@ -62,3 +62,24 @@ func UpdateRefreshToken(c *fiber.Ctx, curUser models.Users) error {
 
 	return nil
 }
+
+func CheckRefreshToken(c *fiber.Ctx, refresh string, curUser models.Users) error {
+
+	var finded []models.Users
+
+	results := GlobalHandler.Find(&finded, curUser)
+	if results.Error != nil {
+		return models.ResponseErrorAtServer()
+	}
+
+	if len(finded) == 0 {
+		return models.ResponseBadRequest()
+	}
+
+	tokenBD := finded[0].RefreshToken
+	if tokenBD != refresh {
+		return models.ResponseBadRequest()
+	}
+
+	return nil
+}

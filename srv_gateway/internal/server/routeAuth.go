@@ -25,8 +25,5 @@ func tokenAccess(c *fiber.Ctx) error {
 
 func tokenRefresh(c *fiber.Ctx) error {
 
-	// если у нас истёк аксес токен, мы снова обращаемся к сервису авторизации
-	// он проверяет что рефреш токен валиден, и выдаёт новый аксес токен
-
-	return c.SendStatus(fiber.StatusAccepted)
+	return services.TokenRefresher(c)
 }

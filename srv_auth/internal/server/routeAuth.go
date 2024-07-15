@@ -33,10 +33,11 @@ func checkAccessToken(c *fiber.Ctx) error {
 
 func checkRefreshToken(c *fiber.Ctx) error {
 
-	// проверка рефреш токена и выдача нового аксес токена
-	authorization := c.Get("Authorization")
-	token := services.GetAccessTokenFromRefresh(authorization)
+	// получение токенов
+	access := c.Get("Authorization")
+	refresh := c.FormValue("refresh")
 
 	// возвращаем новый аксес токен
-	return c.Status(fiber.StatusCreated).JSON(fiber.Map{"token": token})
+	return services.RefreshTokenNew(c, refresh, access)
+
 }

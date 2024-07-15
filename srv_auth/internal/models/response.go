@@ -23,8 +23,14 @@ func ResponseTokenGood() error {
 func ResponseTokenExpired() error {
 	return errors.New("token is expired")
 }
+func ResponseTokenDontSame() error {
+	return errors.New("token dont same")
+}
 func ResponseTokenUnauthorized() error {
 	return errors.New("unauthorized token")
+}
+func ResponseTokenDontRead() error {
+	return errors.New("token hasnt deconvert")
 }
 
 func ResponseUserExist() error {

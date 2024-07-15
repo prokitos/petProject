@@ -43,5 +43,9 @@ func TokenCheck(c *fiber.Ctx) error {
 
 func TokenRefresher(c *fiber.Ctx) error {
 
-	return c.SendStatus(fiber.StatusAccepted)
+	authorization := c.Get("Authorization")
+	refresh := c.FormValue("refresh")
+
+	token := sendTokenToRefresh(c, authorization, refresh, "/refreshToken")
+	return c.Status(fiber.StatusCreated).JSON(fiber.Map{"status": token.Status, "accessToken": token.Data.AccessToken, "refreshToken": token.Data.RefreshToken})
 }

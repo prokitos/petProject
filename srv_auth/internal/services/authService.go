@@ -70,3 +70,30 @@ func Registration(c *fiber.Ctx) (models.TokenResponser, error) {
 
 	return res, models.ResponseGood()
 }
+
+func RefreshTokenNew(c *fiber.Ctx, refresh string, access string) error {
+
+	// проверка что рефреш токен не истёк, также проверка что аксес токен совпадает с рефреш токеном, и вывод логина пользователя из токена.
+	user, err := GetUserFromRefresh(refresh, access)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"status": err.Error()})
+	}
+
+	// потом проверка что в базе данных лежит наш рефреш токен
+	err = database.CheckRefreshToken(c, refresh, user)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"status": err.Error()})
+	}
+
+	// и уже потом генерация нового рефреш и аксес токена
+	token := TokenGetPair(user)
+
+	// записываем токен в базу
+	user.RefreshToken = token.RefreshToken
+	err = database.UpdateRefreshToken(c, user)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"status": err.Error()})
+	}
+
+	return c.Status(fiber.StatusCreated).JSON(fiber.Map{"status": models.ResponseGood().Error(), "data": token})
+}

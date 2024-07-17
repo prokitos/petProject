@@ -1,9 +1,10 @@
 package models
 
 type Config struct {
-	Env     string        `yaml:"env" env-default:"local"`
-	Connect ConnectConfig `yaml:"postgres"`
-	Server  ServerConfig  `yaml:"server"`
+	Env      string         `yaml:"env" env-default:"local"`
+	Connect  ConnectConfig  `yaml:"postgres"`
+	Server   ServerConfig   `yaml:"server"`
+	External ExternalConfig `yaml:"external"`
 }
 
 type ConnectConfig struct {
@@ -17,4 +18,8 @@ type ConnectConfig struct {
 
 type ServerConfig struct {
 	Port string `yaml:"port"`
+}
+
+type ExternalConfig struct {
+	EnrichtService string `yaml:"enricht"`
 }

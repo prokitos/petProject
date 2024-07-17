@@ -3,6 +3,7 @@ package services
 import (
 	"context"
 	"fmt"
+	"module/internal/config"
 	"module/internal/generpc"
 	"module/internal/models"
 	"time"
@@ -10,14 +11,12 @@ import (
 	"google.golang.org/grpc"
 )
 
-var externalUrl = "localhost:8006"
-
 func registerSend(car models.Car) (*models.Car, error) {
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*2)
 	defer cancel()
 
-	conn, err := grpc.Dial(externalUrl, grpc.WithInsecure())
+	conn, err := grpc.Dial(config.ExternalAddress.EnrichtService, grpc.WithInsecure())
 	if err != nil {
 		return nil, models.ResponseConnectionError()
 	}

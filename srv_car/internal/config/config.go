@@ -7,6 +7,8 @@ import (
 	"github.com/ilyakaznacheev/cleanenv"
 )
 
+var ExternalAddress models.ExternalConfig
+
 func ConfigMustLoad() *models.Config {
 
 	path := "internal/config/local.yaml"
@@ -20,5 +22,6 @@ func ConfigMustLoad() *models.Config {
 		panic("failed to read")
 	}
 
+	ExternalAddress = cfg.External
 	return &cfg
 }

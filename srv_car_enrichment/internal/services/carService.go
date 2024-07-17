@@ -1,6 +1,7 @@
 package services
 
 import (
+	"fmt"
 	"math/rand"
 	"module/internal/models"
 	"strconv"
@@ -14,12 +15,14 @@ func EnrichtedOwner() []models.People {
 
 	var peoples []models.People
 
-	var devNum = randRange(1, 3)
+	var devNum = randRange(1, 4) // количество владельцев от 1 до 3
 	for i := 0; i < devNum; i++ {
 		var curUser models.People
-		curUser.Name = nameMap[randRange(1, len(nameMap))]
-		curUser.Surname = surnMap[randRange(1, len(surnMap))]
-		curUser.Email = curUser.Name + strconv.Itoa(randRange(1800, 2000)) + mailMap[randRange(1, len(mailMap))]
+		curUser.Name = nameMap[randRange(1, len(nameMap)+1)]
+		curUser.Surname = surnMap[randRange(1, len(surnMap)+1)]
+		curUser.Email = curUser.Name + strconv.Itoa(randRange(1800, 2000)) + mailMap[randRange(1, len(mailMap)+1)]
+
+		fmt.Println(curUser.Name)
 
 		peoples = append(peoples, curUser)
 	}
@@ -32,9 +35,9 @@ func EnrichtedDevices() []models.AdditionalDevices {
 
 	var devMap = map[int]string{1: "ParkMaster", 2: "Trailer coupling", 3: "Window lifter", 4: "Power steering", 5: "Nitro", 6: "DVR"}
 
-	var devNum = randRange(1, 3)
-	var rands = randRange(1, 3)
-	var curRand = randRange(1, 6)
+	var devNum = randRange(1, 4)              // от 1 до 3 устройств
+	var rands = randRange(1, 4)               // как будут генерироваться разные устройства
+	var curRand = randRange(1, len(devMap)+1) // айди устройства в текущей генерации
 
 	// супер странная генерация рандома
 	var devices []models.AdditionalDevices

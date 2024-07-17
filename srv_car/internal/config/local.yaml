@@ -8,3 +8,5 @@ postgres:
   host: "localhost"
   name: "pets"
   reload: false
+external:
+  encricht: "http://localhost:8006"

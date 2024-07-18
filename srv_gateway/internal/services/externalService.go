@@ -45,7 +45,7 @@ func sendToAuth(c *fiber.Ctx, sendData models.TokenResponser, supAddress string)
 
 }
 
-func sendTokenToCheck(c *fiber.Ctx, token string, supAddress string) error {
+func sendTokenToCheck(c *fiber.Ctx, token string, supAddress string) (int, error) {
 
 	baseURL := config.ExternalAddress.AuthService + supAddress
 
@@ -59,20 +59,20 @@ func sendTokenToCheck(c *fiber.Ctx, token string, supAddress string) error {
 	resp, err := client.Do(req)
 	if err != nil {
 		fmt.Println("no connect to auth service")
-		return models.ResponseConnectError()
+		return 0, models.ResponseConnectError()
 	}
 	defer resp.Body.Close()
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		fmt.Println("error reading byte")
-		return models.ResponseEncodingError()
+		return 0, models.ResponseEncodingError()
 	}
 
 	var instance models.ExternalStruct
 	json.Unmarshal(body, &instance)
 
-	return errors.New(instance.Status)
+	return instance.Access, errors.New(instance.Status)
 
 }
 

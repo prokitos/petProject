@@ -5,6 +5,7 @@ import "github.com/dgrijalva/jwt-go"
 type ExternalStruct struct {
 	Status string
 	Data   Tokens
+	Access int
 }
 
 type Tokens struct {

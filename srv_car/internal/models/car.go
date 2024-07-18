@@ -39,7 +39,6 @@ type Selling struct {
 	Time   time.Time `json:"time" example:""`
 }
 
-// ParkMaster, alarm system, trailer coupling, window lifter, power steering, nitro, DVR
 type AdditionalDevices struct {
 	Id         int    `json:"device_id" example:"" gorm:"unique;primaryKey;autoIncrement"`
 	DeviceName string `json:"device_name" example:""`

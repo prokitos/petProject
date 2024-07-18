@@ -7,44 +7,44 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func carInsert(c *fiber.Ctx) error {
+func carSellInsert(c *fiber.Ctx) error {
 
 	level, res := services.TokenCheck(c)
 
-	if res.Error() == models.ResponseTokenGood().Error() && level > 2 {
+	if res.Error() == models.ResponseTokenGood().Error() && level > 1 {
 		return services.SendcarInsert(c)
 	}
 
 	return models.ResponseTokenExpired()
 }
 
-func carShow(c *fiber.Ctx) error {
+func carSellShow(c *fiber.Ctx) error {
 
 	level, res := services.TokenCheck(c)
 
-	if res.Error() == models.ResponseTokenGood().Error() && level > 1 {
+	if res.Error() == models.ResponseTokenGood().Error() && level > 0 {
 		return services.SendcarShow(c)
 	}
 
 	return models.ResponseTokenExpired()
 }
 
-func carUpdate(c *fiber.Ctx) error {
+func carSellUpdate(c *fiber.Ctx) error {
 
 	level, res := services.TokenCheck(c)
 
-	if res.Error() == models.ResponseTokenGood().Error() && level > 2 {
+	if res.Error() == models.ResponseTokenGood().Error() && level > 1 {
 		return services.SendcarUpdate(c)
 	}
 
 	return models.ResponseTokenExpired()
 }
 
-func carDelete(c *fiber.Ctx) error {
+func carSellDelete(c *fiber.Ctx) error {
 
 	level, res := services.TokenCheck(c)
 
-	if res.Error() == models.ResponseTokenGood().Error() && level > 2 {
+	if res.Error() == models.ResponseTokenGood().Error() && level > 1 {
 		return services.SendcarDelete(c)
 	}
 

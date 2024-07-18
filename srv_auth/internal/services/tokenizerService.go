@@ -110,22 +110,24 @@ func createTokenRefresh(curUser models.Users, accessToken string) string {
 }
 
 // метод для проведения проверки аксес токена
-func TokenAccessValidate(bearer string) string {
+func TokenAccessValidate(bearer string) (string, int) {
 
 	token, err := validateAccessToken(bearer)
 	if err != nil {
 		if err == jwt.ErrSignatureInvalid {
-			return models.ResponseTokenUnauthorized().Error()
+			return models.ResponseTokenUnauthorized().Error(), 0
 		}
-		return models.ResponseTokenUnauthorized().Error()
+		return models.ResponseTokenUnauthorized().Error(), 0
 	}
 
 	if !token.Valid {
-		return models.ResponseTokenExpired().Error()
+		return models.ResponseTokenExpired().Error(), 0
 	}
 
+	user := token.Claims.(*models.AccessToken)
+
 	// токен валиден. вернуть результат
-	return models.ResponseTokenGood().Error()
+	return models.ResponseTokenGood().Error(), user.AccessLevel
 
 }
 

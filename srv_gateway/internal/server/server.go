@@ -22,11 +22,17 @@ func handlers(instance *fiber.App) {
 
 	instance.Post("/login", loginRoute)
 	instance.Post("/register", registerRoute)
-	instance.Post("/access", tokenAccess)
 	instance.Post("/refresh", tokenRefresh)
 
 	instance.Post("/car", carInsert)
 	instance.Delete("/car", carDelete)
 	instance.Get("/car", carShow)
 	instance.Put("/car", carUpdate)
+
+	// будем отправлять айди машины и айди клиента.
+	// на клиенте будет идти выбор машин и клиентов по имени и названию, и отправлять айдишники в эти роуты
+	instance.Post("/carSell", carSellInsert)
+	instance.Delete("/carSell", carSellDelete)
+	instance.Get("/carSell", carSellShow)
+	instance.Put("/carSell", carSellUpdate)
 }

@@ -35,7 +35,8 @@ func Authorization(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusCreated).JSON(fiber.Map{"status": err.Error(), "accessToken": res.AccessToken, "refreshToken": res.RefreshToken})
 }
 
-func TokenCheck(c *fiber.Ctx) error {
+// проверяет валиден ли токен, и возвращает уровень доступа.
+func TokenCheck(c *fiber.Ctx) (int, error) {
 
 	authorization := c.Get("Authorization")
 	return sendTokenToCheck(c, authorization, "/accessToken")

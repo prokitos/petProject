@@ -90,6 +90,42 @@ func ResponseCarGoodUpdate() ResponseCar {
 	return resp
 }
 
+type ResponseSell struct {
+	Description string    `json:"description"        example:"description"`
+	Code        int       `json:"code"               example:"status"`
+	Sells       []Selling `json:"cars"               example:"...."`
+}
+
+func ResponseSellGoodShow(sells []Selling) ResponseSell {
+	var resp ResponseSell
+	resp.Code = 200
+	resp.Description = "car get success"
+	resp.Sells = sells
+	return resp
+}
+func ResponseSellBadShow() ResponseSell {
+	var resp ResponseSell
+	resp.Code = 400
+	resp.Description = "car get failed"
+	resp.Sells = nil
+	return resp
+}
+
+func ResponseSellGoodExecute() ResponseSell {
+	var resp ResponseSell
+	resp.Code = 200
+	resp.Description = "selling operation success"
+	resp.Sells = nil
+	return resp
+}
+func ResponseSellBadExecute() ResponseSell {
+	var resp ResponseSell
+	resp.Code = 400
+	resp.Description = "selling operation failed"
+	resp.Sells = nil
+	return resp
+}
+
 func ResponseTokenGood() error {
 	return errors.New("token is useful")
 }

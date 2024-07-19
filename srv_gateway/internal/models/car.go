@@ -48,3 +48,10 @@ type CarToRM struct {
 	Car
 	Types string
 }
+
+type SellingToRM struct {
+	Id       int
+	CarId    int
+	PeopleId int
+	Types    string
+}

@@ -11,67 +11,7 @@ import (
 	amqp "github.com/rabbitmq/amqp091-go"
 )
 
-func SendSellcarInsert(c *fiber.Ctx) error {
-
-	var curCar models.CarToRM
-
-	if err := c.BodyParser(&curCar); err != nil {
-		return models.ResponseBadRequest()
-	}
-
-	curCar.Types = "insert"
-
-	return DatabaseProducing(c, curCar)
-}
-
-func SendSellcarShow(c *fiber.Ctx) error {
-
-	var curCar models.CarToRM
-
-	curCar.Id, _ = strconv.Atoi(c.Query("id"))
-	curCar.Mark = c.Query("mark", "")
-	curCar.Year = c.Query("year", "")
-	curCar.Price, _ = strconv.Atoi(c.Query("price", ""))
-	curCar.Color = c.Query("color", "")
-	curCar.MaxSpeed, _ = strconv.Atoi(c.Query("max_speed", ""))
-	curCar.SeatsNum, _ = strconv.Atoi(c.Query("seat_num", ""))
-	curCar.Status = c.Query("status", "")
-
-	curCar.Types = "show"
-	return DatabaseProducing(c, curCar)
-}
-
-func SendSellcarUpdate(c *fiber.Ctx) error {
-
-	var curCar models.CarToRM
-
-	if err := c.BodyParser(&curCar); err != nil {
-		return models.ResponseBadRequest()
-	}
-
-	curCar.Types = "update"
-
-	return DatabaseProducing(c, curCar)
-}
-
-func SendSellcarDelete(c *fiber.Ctx) error {
-
-	var curCar models.CarToRM
-
-	curCar.Id, _ = strconv.Atoi(c.Query("id"))
-	curCar.Mark = c.Query("mark", "")
-	curCar.Year = c.Query("year", "")
-	curCar.Price, _ = strconv.Atoi(c.Query("price", ""))
-	curCar.Color = c.Query("color", "")
-	curCar.MaxSpeed, _ = strconv.Atoi(c.Query("max_speed", ""))
-	curCar.SeatsNum, _ = strconv.Atoi(c.Query("seat_num", ""))
-	curCar.Status = c.Query("status", "")
-
-	curCar.Types = "delete"
-	return DatabaseProducing(c, curCar)
-}
-
-func DatabaseSellProducing(c *fiber.Ctx, curCar models.CarToRM) error {
+func DatabaseSellProducing(c *fiber.Ctx, curSell models.SellingToRM) error {
 	conn, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
 	handleError(err, "Failed to connect to RabbitMQ")
 	defer conn.Close()
@@ -104,16 +44,15 @@ func DatabaseSellProducing(c *fiber.Ctx, curCar models.CarToRM) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	addTask := curCar
+	addTask := curSell
 	body, err := json.Marshal(addTask)
-
-	corrId := "66"
+	corrId := "67"
 
 	err = ch.PublishWithContext(ctx,
-		"",           // exchange
-		"carService", // routing key
-		false,        // mandatory
-		false,        // immediate
+		"",               // exchange
+		"carSellService", // routing key
+		false,            // mandatory
+		false,            // immediate
 		amqp.Publishing{
 			ContentType:   "text/plain",
 			CorrelationId: corrId,
@@ -125,10 +64,10 @@ func DatabaseSellProducing(c *fiber.Ctx, curCar models.CarToRM) error {
 	for d := range msgs {
 		if corrId == d.CorrelationId {
 
-			addTasks := &models.ResponseCar{}
+			addTasks := &models.ResponseSell{}
 			json.Unmarshal(d.Body, addTasks)
 
-			return returnResponse(c, addTasks)
+			return returnSellResponse(c, addTasks)
 
 		}
 	}
@@ -136,27 +75,65 @@ func DatabaseSellProducing(c *fiber.Ctx, curCar models.CarToRM) error {
 	return models.ResponseBadRequest()
 }
 
-func returnSellResponse(c *fiber.Ctx, res *models.ResponseCar) error {
+func returnSellResponse(c *fiber.Ctx, res *models.ResponseSell) error {
 
-	if res.Description == models.ResponseCarGoodCreate().Description || res.Description == models.ResponseCarBadCreate().Description {
+	if res.Description == models.ResponseSellGoodExecute().Description || res.Description == models.ResponseSellBadExecute().Description {
 		return c.Status(fiber.StatusAccepted).JSON(fiber.Map{"status": res.Description, "code": res.Code})
 	}
 
-	if res.Description == models.ResponseCarGoodShow([]models.Car{}).Description {
-		return c.Status(fiber.StatusAccepted).JSON(fiber.Map{"status": res.Description, "code": res.Code, "data": res.Cars})
+	if res.Description == models.ResponseSellGoodShow([]models.Selling{}).Description || res.Description == models.ResponseSellBadShow().Description {
+		return c.Status(fiber.StatusAccepted).JSON(fiber.Map{"status": res.Description, "code": res.Code, "data": res.Sells})
 	}
-	if res.Description == models.ResponseCarBadShow().Description {
-		return c.Status(fiber.StatusAccepted).JSON(fiber.Map{"status": res.Description, "code": res.Code})
-	}
-
-	if res.Description == models.ResponseCarBadDelete().Description || res.Description == models.ResponseCarGoodDelete().Description {
-		return c.Status(fiber.StatusAccepted).JSON(fiber.Map{"status": res.Description, "code": res.Code})
-	}
-
-	if res.Description == models.ResponseCarBadUpdate().Description || res.Description == models.ResponseCarGoodUpdate().Description {
-		return c.Status(fiber.StatusAccepted).JSON(fiber.Map{"status": res.Description, "code": res.Code})
-	}
-
 	return c.SendStatus(fiber.StatusAccepted)
 
+}
+
+func SendSellcarInsert(c *fiber.Ctx) error {
+
+	var curSell models.SellingToRM
+
+	if err := c.BodyParser(&curSell); err != nil {
+		return models.ResponseBadRequest()
+	}
+
+	curSell.Types = "SellInsert"
+
+	return DatabaseSellProducing(c, curSell)
+}
+
+func SendSellcarShow(c *fiber.Ctx) error {
+
+	var curSell models.SellingToRM
+
+	curSell.Id, _ = strconv.Atoi(c.Query("id"))
+	curSell.CarId, _ = strconv.Atoi(c.Query("car_id"))
+	curSell.PeopleId, _ = strconv.Atoi(c.Query("car_id"))
+
+	curSell.Types = "SellShow"
+	return DatabaseSellProducing(c, curSell)
+}
+
+func SendSellcarUpdate(c *fiber.Ctx) error {
+
+	var curSell models.SellingToRM
+
+	if err := c.BodyParser(&curSell); err != nil {
+		return models.ResponseBadRequest()
+	}
+
+	curSell.Types = "SellUpdate"
+
+	return DatabaseSellProducing(c, curSell)
+}
+
+func SendSellcarDelete(c *fiber.Ctx) error {
+
+	var curSell models.SellingToRM
+
+	curSell.Id, _ = strconv.Atoi(c.Query("id"))
+	curSell.CarId, _ = strconv.Atoi(c.Query("car_id"))
+	curSell.PeopleId, _ = strconv.Atoi(c.Query("car_id"))
+
+	curSell.Types = "SellDelete"
+	return DatabaseSellProducing(c, curSell)
 }

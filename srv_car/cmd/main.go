@@ -4,6 +4,9 @@ import (
 	"module/internal/config"
 	"module/internal/database"
 	"module/internal/server"
+	"os"
+	"os/signal"
+	"syscall"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -27,6 +30,13 @@ func main() {
 	database.OpenConnection(cfg.Connect)
 	database.StartMigration()
 
-	server.Consuming()
+	// запуск rabbitMQ в потоках
+	go server.CarSellConsuming()
+	go server.CarConsuming()
+
+	// завершение при нажатии кнопок
+	stop := make(chan os.Signal, 1)
+	signal.Notify(stop, syscall.SIGTERM, syscall.SIGINT)
+	<-stop
 
 }

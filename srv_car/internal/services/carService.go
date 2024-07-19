@@ -7,6 +7,7 @@ import (
 
 func CarInsert(curCar models.Car) models.ResponseCar {
 
+	// Обагощение данных, если пусто
 	if curCar.Devices == nil || curCar.Engine.EngineCapacity == 0 || curCar.Engine.EnginePower == 0 || curCar.OwnerList == nil {
 		res, err := registerSend(curCar)
 		if err != nil {
@@ -41,4 +42,23 @@ func CarUpdate(curCar models.Car) models.ResponseCar {
 func CarShow(curCar models.Car) models.ResponseCar {
 
 	return database.ShowCar(curCar)
+}
+
+func CarSellInsert(curSell models.SellingToRM) models.ResponseSell {
+	return database.CreateNewSell(curSell)
+}
+
+func CarSellDelete(curSell models.SellingToRM) models.ResponseSell {
+
+	return database.DeleteSell(curSell)
+}
+
+func CarSellUpdate(curSell models.SellingToRM) models.ResponseSell {
+
+	return database.UpdateSell(curSell)
+}
+
+func CarSellShow(curSell models.SellingToRM) models.ResponseSell {
+
+	return database.ShowSell(curSell)
 }

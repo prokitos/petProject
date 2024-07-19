@@ -69,3 +69,54 @@ func UpdateCar(curModel models.Car) models.ResponseCar {
 	// Send a 201 created response
 	return models.ResponseCarGoodUpdate()
 }
+
+func CreateNewSell(instance models.SellingToRM) models.ResponseSell {
+
+	var curSell models.Selling
+	var curCar models.Car
+	var curPeople models.People
+	curCar.Id = instance.CarId
+	curPeople.Id = instance.PeopleId
+	curSell.Car = curCar
+	curSell.People = curPeople
+
+	if result := GlobalHandler.Create(&curSell); result.Error != nil {
+		log.Debug("create record error!")
+		return models.ResponseSellBadExecute()
+	}
+
+	return models.ResponseSellGoodExecute()
+}
+
+func DeleteSell(curModel models.SellingToRM) models.ResponseSell {
+
+	GlobalHandler.Select(clause.Associations).Delete(&curModel)
+	GlobalHandler.Delete(&models.Car{}, curModel.Id)
+
+	return models.ResponseSellGoodExecute()
+}
+
+func ShowSell(instance models.SellingToRM) models.ResponseSell {
+
+	var curSell models.Selling
+	var curCar models.Car
+	var curPeople models.People
+	curCar.Id = instance.CarId
+	curPeople.Id = instance.PeopleId
+	curSell.Car = curCar
+	curSell.People = curPeople
+
+	var finded []models.Selling
+
+	results := GlobalHandler.Preload("Car").Preload("People").Find(&finded, curSell)
+	if results.Error != nil {
+		return models.ResponseSellBadShow()
+	}
+
+	return models.ResponseSellGoodShow(finded)
+}
+
+func UpdateSell(curModel models.SellingToRM) models.ResponseSell {
+
+	return models.ResponseSellBadExecute()
+}

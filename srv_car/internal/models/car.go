@@ -33,10 +33,12 @@ type People struct {
 }
 
 type Selling struct {
-	Id     int       `json:"sell_id" example:"" gorm:"unique;primaryKey;autoIncrement"`
-	Car    Car       `json:"car" example:"" gorm:"ForeignKey:Id"`
-	People People    `json:"buyer" example:"" gorm:"ForeignKey:Id"`
-	Time   time.Time `json:"time" example:""`
+	Id       int       `json:"sell_id" example:"" gorm:"unique;primaryKey;autoIncrement"`
+	CarId    int       `json:"car_id" example:""`
+	PeopleId int       `json:"people_id" example:""`
+	Car      Car       `json:"car" example:"" gorm:"ForeignKey:CarId"`
+	People   People    `json:"buyer" example:"" gorm:"ForeignKey:PeopleId"`
+	Time     time.Time `json:"time" example:""`
 }
 
 type AdditionalDevices struct {
@@ -52,7 +54,7 @@ type CarToRM struct {
 
 type SellingToRM struct {
 	Id       int
-	CarId    int
-	PeopleId int
+	CarId    int `json:"car_id" example:""`
+	PeopleId int `json:"people_id" example:""`
 	Types    string
 }

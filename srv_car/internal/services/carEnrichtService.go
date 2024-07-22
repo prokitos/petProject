@@ -18,6 +18,7 @@ func registerSend(car models.Car) (*models.Car, error) {
 
 	conn, err := grpc.Dial(config.ExternalAddress.EnrichtService, grpc.WithInsecure())
 	if err != nil {
+		fmt.Println(config.ExternalAddress.EnrichtService)
 		return nil, models.ResponseConnectionError()
 	}
 	defer conn.Close()

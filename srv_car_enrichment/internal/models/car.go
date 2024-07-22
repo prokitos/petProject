@@ -1,9 +1,5 @@
 package models
 
-import (
-	"time"
-)
-
 type Car struct {
 	Id        int                 `json:"car_id" example:"" gorm:"unique;primaryKey;autoIncrement"`
 	Mark      string              `json:"mark" example:""`
@@ -30,13 +26,6 @@ type People struct {
 	Name    string `json:"name" example:""`
 	Surname string `json:"surname" example:""`
 	Email   string `json:"email" example:""`
-}
-
-type Selling struct {
-	Id     int       `json:"sell_id" example:"" gorm:"unique;primaryKey;autoIncrement"`
-	Car    Car       `json:"car" example:"" gorm:"ForeignKey:Id"`
-	People People    `json:"buyer" example:"" gorm:"ForeignKey:Id"`
-	Time   time.Time `json:"time" example:""`
 }
 
 type AdditionalDevices struct {

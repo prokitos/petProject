@@ -51,7 +51,7 @@ type CarToRM struct {
 
 type SellingToRM struct {
 	Id       int
-	CarId    int
-	PeopleId int
+	CarId    int `json:"car_id" example:""`
+	PeopleId int `json:"people_id" example:""`
 	Types    string
 }

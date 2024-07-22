@@ -79,6 +79,8 @@ func CreateNewSell(instance models.SellingToRM) models.ResponseSell {
 	curPeople.Id = instance.PeopleId
 	curSell.Car = curCar
 	curSell.People = curPeople
+	curSell.CarId = instance.CarId
+	curSell.PeopleId = instance.PeopleId
 
 	if result := GlobalHandler.Create(&curSell); result.Error != nil {
 		log.Debug("create record error!")
@@ -99,16 +101,11 @@ func DeleteSell(curModel models.SellingToRM) models.ResponseSell {
 func ShowSell(instance models.SellingToRM) models.ResponseSell {
 
 	var curSell models.Selling
-	var curCar models.Car
-	var curPeople models.People
-	curCar.Id = instance.CarId
-	curPeople.Id = instance.PeopleId
-	curSell.Car = curCar
-	curSell.People = curPeople
+	curSell.Id = instance.Id
 
 	var finded []models.Selling
 
-	results := GlobalHandler.Preload("Car").Preload("People").Find(&finded, curSell)
+	results := GlobalHandler.Preload("Car").Preload("People").Preload("Car.Engine").Preload("Car.Devices").Preload("Car.OwnerList").Find(&finded, curSell)
 	if results.Error != nil {
 		return models.ResponseSellBadShow()
 	}

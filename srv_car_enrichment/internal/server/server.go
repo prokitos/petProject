@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"fmt"
 	"module/internal/models"
 	"module/internal/server/generpc"
 	"module/internal/services"
@@ -18,6 +19,8 @@ func Register(gRPC *grpc.Server) {
 }
 
 func (s *serverApi) CarEnricht(ctx context.Context, req *generpc.CarRequest) (*generpc.CarResponse, error) {
+
+	fmt.Println("prishlo")
 
 	test1 := services.EnrichtedOwner()
 	test2 := services.EnrichtedEngine()

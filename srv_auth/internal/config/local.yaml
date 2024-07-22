@@ -2,7 +2,7 @@ env: "local"
 server:
   port: ":8002"
 token:
-  access_ttl: 1m
+  access_ttl: 3m
   refresh_ttl: 10m
   access_key: "basic_key"
   refresh_key: "super_mega_key"

@@ -9,4 +9,4 @@ postgres:
   name: "pets"
   reload: false
 external:
-  encricht: "http://localhost:8006"
+  enricht: "localhost:8006"

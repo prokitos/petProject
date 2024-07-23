@@ -1,11 +1,29 @@
 package services
 
 import (
-	"fmt"
 	"math/rand"
 	"module/internal/models"
 	"strconv"
 )
+
+func EnrichtedBase() models.Car {
+
+	var curCar models.Car
+
+	var colorMap = map[int]string{1: "Red", 2: "White", 3: "Yellow", 4: "Green", 5: "Black", 6: "Blue"}
+	var markMap = map[int]string{1: "Lada", 2: "Ford", 3: "BMW", 4: "Audi", 5: "Mazda", 6: "Toyota"}
+	var seatMap = map[int]int{1: 2, 2: 4, 3: 6}
+
+	curCar.Color = colorMap[randRange(1, len(colorMap)+1)]
+	curCar.Mark = markMap[randRange(1, len(markMap)+1)]
+	curCar.Year = strconv.Itoa(randRange(1970, 2020))
+	curCar.Price = randRange(500000, 4000000)
+	curCar.MaxSpeed = randRange(90, 260)
+	curCar.SeatsNum = seatMap[randRange(1, len(seatMap)+1)]
+
+	return curCar
+
+}
 
 func EnrichtedOwner() []models.People {
 
@@ -21,8 +39,6 @@ func EnrichtedOwner() []models.People {
 		curUser.Name = nameMap[randRange(1, len(nameMap)+1)]
 		curUser.Surname = surnMap[randRange(1, len(surnMap)+1)]
 		curUser.Email = curUser.Name + strconv.Itoa(randRange(1800, 2000)) + mailMap[randRange(1, len(mailMap)+1)]
-
-		fmt.Println(curUser.Name)
 
 		peoples = append(peoples, curUser)
 	}

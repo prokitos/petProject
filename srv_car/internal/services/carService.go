@@ -8,7 +8,7 @@ import (
 func CarInsert(curCar models.Car) models.ResponseCar {
 
 	// Обагощение данных, если пусто
-	if curCar.Devices == nil || curCar.Engine.EngineCapacity == 0 || curCar.Engine.EnginePower == 0 || curCar.OwnerList == nil {
+	if curCar.Devices == nil || curCar.Engine.EngineCapacity == 0 || curCar.Engine.EnginePower == 0 || curCar.OwnerList == nil || curCar.Mark == "" || curCar.Price == 0 {
 		res, err := registerSend(curCar)
 		if err != nil {
 			return models.ResponseCar{}
@@ -23,6 +23,14 @@ func CarInsert(curCar models.Car) models.ResponseCar {
 		if curCar.Engine.EngineCapacity == 0 || curCar.Engine.EnginePower == 0 {
 			curCar.Engine.EngineCapacity = res.Engine.EngineCapacity
 			curCar.Engine.EnginePower = res.Engine.EnginePower
+		}
+		if curCar.Price == 0 || curCar.Mark == "" {
+			curCar.Color = res.Color
+			curCar.Mark = res.Mark
+			curCar.MaxSpeed = res.MaxSpeed
+			curCar.Price = res.Price
+			curCar.SeatsNum = res.SeatsNum
+			curCar.Year = res.Year
 		}
 	}
 

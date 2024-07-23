@@ -58,5 +58,12 @@ func registerSend(car models.Car) (*models.Car, error) {
 		newCar.OwnerList = append(newCar.OwnerList, curOwn)
 	}
 
+	newCar.Color = response.Color
+	newCar.Mark = response.Mark
+	newCar.MaxSpeed = int(response.MaxSpeed)
+	newCar.Price = int(response.Price)
+	newCar.SeatsNum = int(response.SeatsNum)
+	newCar.Year = response.Year
+
 	return &newCar, nil
 }

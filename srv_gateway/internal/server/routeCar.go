@@ -11,7 +11,11 @@ func carInsert(c *fiber.Ctx) error {
 
 	level, res := services.TokenCheck(c)
 
-	if res.Error() == models.ResponseTokenGood().Error() && level > 1 {
+	if level < 2 {
+		return models.ResponseAccessDenied()
+	}
+
+	if res.Error() == models.ResponseTokenGood().Error() {
 		return services.SendcarInsert(c)
 	}
 
@@ -22,7 +26,11 @@ func carShow(c *fiber.Ctx) error {
 
 	level, res := services.TokenCheck(c)
 
-	if res.Error() == models.ResponseTokenGood().Error() && level > 0 {
+	if level < 1 {
+		return models.ResponseAccessDenied()
+	}
+
+	if res.Error() == models.ResponseTokenGood().Error() {
 		return services.SendcarShow(c)
 	}
 
@@ -33,7 +41,11 @@ func carUpdate(c *fiber.Ctx) error {
 
 	level, res := services.TokenCheck(c)
 
-	if res.Error() == models.ResponseTokenGood().Error() && level > 1 {
+	if level < 2 {
+		return models.ResponseAccessDenied()
+	}
+
+	if res.Error() == models.ResponseTokenGood().Error() {
 		return services.SendcarUpdate(c)
 	}
 
@@ -44,7 +56,11 @@ func carDelete(c *fiber.Ctx) error {
 
 	level, res := services.TokenCheck(c)
 
-	if res.Error() == models.ResponseTokenGood().Error() && level > 1 {
+	if level < 2 {
+		return models.ResponseAccessDenied()
+	}
+
+	if res.Error() == models.ResponseTokenGood().Error() {
 		return services.SendcarDelete(c)
 	}
 

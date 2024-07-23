@@ -2,7 +2,6 @@ package server
 
 import (
 	"context"
-	"fmt"
 	"module/internal/models"
 	"module/internal/server/generpc"
 	"module/internal/services"
@@ -20,18 +19,17 @@ func Register(gRPC *grpc.Server) {
 
 func (s *serverApi) CarEnricht(ctx context.Context, req *generpc.CarRequest) (*generpc.CarResponse, error) {
 
-	fmt.Println("prishlo")
-
 	test1 := services.EnrichtedOwner()
 	test2 := services.EnrichtedEngine()
 	test3 := services.EnrichtedDevices()
+	test4 := services.EnrichtedBase()
 
-	res := ResultCompile(test1, test2, test3)
+	res := ResultCompile(test1, test2, test3, test4)
 	return &res, nil
 
 }
 
-func ResultCompile(test1 []models.People, test2 models.CarEngine, test3 []models.AdditionalDevices) generpc.CarResponse {
+func ResultCompile(test1 []models.People, test2 models.CarEngine, test3 []models.AdditionalDevices, test4 models.Car) generpc.CarResponse {
 
 	var result generpc.CarResponse
 
@@ -53,6 +51,14 @@ func ResultCompile(test1 []models.People, test2 models.CarEngine, test3 []models
 		curDev.DeviceName = test3[i].DeviceName
 		result.Devices = append(result.Devices, &curDev)
 	}
+
+	result.Color = test4.Color
+	result.Mark = test4.Mark
+	result.Year = test4.Year
+	result.Price = int64(test4.Price)
+	result.MaxSpeed = int64(test4.MaxSpeed)
+	result.SeatsNum = int64(test4.SeatsNum)
+	result.Status = "Sale"
 
 	return result
 }

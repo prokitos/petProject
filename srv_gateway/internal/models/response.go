@@ -141,3 +141,7 @@ func ResponseEncodingError() error {
 func ResponseTokenExpired() error {
 	return errors.New("token is expired")
 }
+
+func ResponseAccessDenied() error {
+	return errors.New("access denied")
+}

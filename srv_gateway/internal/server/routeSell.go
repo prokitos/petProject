@@ -11,7 +11,11 @@ func carSellInsert(c *fiber.Ctx) error {
 
 	level, res := services.TokenCheck(c)
 
-	if res.Error() == models.ResponseTokenGood().Error() && level > 2 {
+	if level < 3 {
+		return models.ResponseAccessDenied()
+	}
+
+	if res.Error() == models.ResponseTokenGood().Error() {
 		return services.SendSellcarInsert(c)
 	}
 
@@ -22,7 +26,11 @@ func carSellShow(c *fiber.Ctx) error {
 
 	level, res := services.TokenCheck(c)
 
-	if res.Error() == models.ResponseTokenGood().Error() && level > 1 {
+	if level < 2 {
+		return models.ResponseAccessDenied()
+	}
+
+	if res.Error() == models.ResponseTokenGood().Error() {
 		return services.SendSellcarShow(c)
 	}
 
@@ -33,7 +41,11 @@ func carSellUpdate(c *fiber.Ctx) error {
 
 	level, res := services.TokenCheck(c)
 
-	if res.Error() == models.ResponseTokenGood().Error() && level > 2 {
+	if level < 3 {
+		return models.ResponseAccessDenied()
+	}
+
+	if res.Error() == models.ResponseTokenGood().Error() {
 		return services.SendSellcarUpdate(c)
 	}
 
@@ -44,7 +56,11 @@ func carSellDelete(c *fiber.Ctx) error {
 
 	level, res := services.TokenCheck(c)
 
-	if res.Error() == models.ResponseTokenGood().Error() && level > 2 {
+	if level < 3 {
+		return models.ResponseAccessDenied()
+	}
+
+	if res.Error() == models.ResponseTokenGood().Error() {
 		return services.SendSellcarDelete(c)
 	}
 

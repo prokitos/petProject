@@ -90,14 +90,6 @@ func CreateNewSell(instance models.SellingToRM) models.ResponseSell {
 	return models.ResponseSellGoodExecute()
 }
 
-func DeleteSell(curModel models.SellingToRM) models.ResponseSell {
-
-	GlobalHandler.Select(clause.Associations).Delete(&curModel)
-	GlobalHandler.Delete(&models.Car{}, curModel.Id)
-
-	return models.ResponseSellGoodExecute()
-}
-
 func ShowSell(instance models.SellingToRM) models.ResponseSell {
 
 	var curSell models.Selling
@@ -113,7 +105,28 @@ func ShowSell(instance models.SellingToRM) models.ResponseSell {
 	return models.ResponseSellGoodShow(finded)
 }
 
-func UpdateSell(curModel models.SellingToRM) models.ResponseSell {
+func DeleteSell(instance models.SellingToRM) models.ResponseSell {
 
-	return models.ResponseSellBadExecute()
+	// также менять статус машины на продано!!?
+
+	GlobalHandler.Delete(&models.Selling{}, instance.Id)
+
+	return models.ResponseSellGoodExecute()
+}
+
+func UpdateSell(instance models.SellingToRM) models.ResponseSell {
+
+	var curSell models.Selling
+	var curCar models.Car
+	var curPeople models.People
+	curCar.Id = instance.CarId
+	curPeople.Id = instance.PeopleId
+	curSell.Car = curCar
+	curSell.People = curPeople
+	curSell.CarId = instance.CarId
+	curSell.PeopleId = instance.PeopleId
+
+	GlobalHandler.Model(models.Selling{}).Where("id = ?", instance.Id).Updates(&curSell)
+
+	return models.ResponseSellGoodExecute()
 }

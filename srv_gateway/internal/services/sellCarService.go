@@ -131,8 +131,6 @@ func SendSellcarDelete(c *fiber.Ctx) error {
 	var curSell models.SellingToRM
 
 	curSell.Id, _ = strconv.Atoi(c.Query("id"))
-	curSell.CarId, _ = strconv.Atoi(c.Query("car_id"))
-	curSell.PeopleId, _ = strconv.Atoi(c.Query("car_id"))
 
 	curSell.Types = "SellDelete"
 	return DatabaseSellProducing(c, curSell)

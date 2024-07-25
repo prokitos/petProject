@@ -72,6 +72,9 @@ func UpdateCar(curModel models.Car) models.ResponseCar {
 
 func CreateNewSell(instance models.SellingToRM) models.ResponseSell {
 
+	// убрать старые попытки добавления sold
+	// добавить проверку, что можно добавить машину только если она "for sale"
+
 	var curSell models.Selling
 	var curCar models.Car
 	var curPeople models.People
@@ -81,6 +84,11 @@ func CreateNewSell(instance models.SellingToRM) models.ResponseSell {
 	curSell.People = curPeople
 	curSell.CarId = instance.CarId
 	curSell.PeopleId = instance.PeopleId
+
+	var tempCar models.Car
+	tempCar.Id = instance.CarId
+	tempCar.Status = "sold"
+	GlobalHandler.Model(models.Car{}).Where("id = ?", tempCar.Id).Updates(&tempCar)
 
 	if result := GlobalHandler.Create(&curSell); result.Error != nil {
 		log.Debug("create record error!")
@@ -107,7 +115,13 @@ func ShowSell(instance models.SellingToRM) models.ResponseSell {
 
 func DeleteSell(instance models.SellingToRM) models.ResponseSell {
 
-	// также менять статус машины на продано!!?
+	var curSell models.Selling
+	if result := GlobalHandler.Preload("Car").First(&curSell, instance.Id); result.Error != nil {
+		return models.ResponseSellBadExecute()
+	}
+
+	curSell.Car.Status = "for sale"
+	GlobalHandler.Model(models.Car{}).Where("id = ?", curSell.Car.Id).Updates(&curSell.Car)
 
 	GlobalHandler.Delete(&models.Selling{}, instance.Id)
 

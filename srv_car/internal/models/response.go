@@ -129,3 +129,10 @@ func ResponseSellBadExecute() ResponseSell {
 	resp.Sells = nil
 	return resp
 }
+func ResponseSellNotForSale() ResponseSell {
+	var resp ResponseSell
+	resp.Code = 400
+	resp.Description = "car is not for sale"
+	resp.Sells = nil
+	return resp
+}

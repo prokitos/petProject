@@ -72,8 +72,17 @@ func UpdateCar(curModel models.Car) models.ResponseCar {
 
 func CreateNewSell(instance models.SellingToRM) models.ResponseSell {
 
-	// убрать старые попытки добавления sold
-	// добавить проверку, что можно добавить машину только если она "for sale"
+	var current models.Car
+	current.Id = instance.CarId
+
+	var finded models.Car
+	resultt := GlobalHandler.First(&finded, current)
+	if resultt.Error != nil {
+		return models.ResponseSellBadExecute()
+	}
+	if finded.Status != "for sale" {
+		return models.ResponseSellNotForSale()
+	}
 
 	var curSell models.Selling
 	var curCar models.Car

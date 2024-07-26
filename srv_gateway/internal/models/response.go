@@ -145,3 +145,11 @@ func ResponseTokenExpired() error {
 func ResponseAccessDenied() error {
 	return errors.New("access denied")
 }
+
+func ResponseSellNotForSale() ResponseSell {
+	var resp ResponseSell
+	resp.Code = 400
+	resp.Description = "car is not for sale"
+	resp.Sells = nil
+	return resp
+}

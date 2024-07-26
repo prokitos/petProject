@@ -81,7 +81,7 @@ func returnSellResponse(c *fiber.Ctx, res *models.ResponseSell) error {
 		return c.Status(fiber.StatusAccepted).JSON(fiber.Map{"status": res.Description, "code": res.Code})
 	}
 
-	if res.Description == models.ResponseSellGoodShow([]models.Selling{}).Description || res.Description == models.ResponseSellBadShow().Description {
+	if res.Description == models.ResponseSellGoodShow([]models.Selling{}).Description || res.Description == models.ResponseSellBadShow().Description || models.ResponseSellNotForSale().Description == res.Description {
 		return c.Status(fiber.StatusAccepted).JSON(fiber.Map{"status": res.Description, "code": res.Code, "data": res.Sells})
 	}
 	return c.SendStatus(fiber.StatusAccepted)

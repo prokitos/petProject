@@ -35,13 +35,16 @@ func GetUserFromRefresh(refresh string, access string) (models.Users, error) {
 	token, err := validateRefreshToken(refresh)
 	if err != nil {
 		if err == jwt.ErrSignatureInvalid {
+			log.Debug("token dont read")
 			return models.Users{}, models.ResponseTokenDontRead()
 		}
+		log.Debug("token is expired")
 		return models.Users{}, models.ResponseTokenExpired()
 	}
 
 	// рефреш токен не валиден, неизвестная ошибка!!
 	if !token.Valid {
+		log.Debug("invalid token")
 		return models.Users{}, models.ResponseTokenError()
 	}
 
@@ -51,6 +54,7 @@ func GetUserFromRefresh(refresh string, access string) (models.Users, error) {
 	// аксес токен не подходит к рефреш токену
 	accessed := strings.Split(access, " ")[1]
 	if user.AcceessToken != accessed {
+		log.Debug("access and refresh token dont same")
 		return models.Users{}, models.ResponseTokenDontSame()
 	}
 
@@ -77,7 +81,7 @@ func createTokenAccess(curUser models.Users) string {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS512, tokenObj)
 	tokenString, err := token.SignedString(AccessKey)
 	if err != nil {
-		log.Error("token dont signed")
+		log.Debug("token dont sighed")
 		return models.ResponseTokenError().Error()
 	}
 
@@ -102,7 +106,7 @@ func createTokenRefresh(curUser models.Users, accessToken string) string {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS512, tokenObj)
 	tokenString, err := token.SignedString(RefreshKey)
 	if err != nil {
-		log.Error("token dont signed")
+		log.Debug("token dont signed")
 		return models.ResponseTokenError().Error()
 	}
 
@@ -115,12 +119,15 @@ func TokenAccessValidate(bearer string) (string, int) {
 	token, err := validateAccessToken(bearer)
 	if err != nil {
 		if err == jwt.ErrSignatureInvalid {
+			log.Debug("token dont read")
 			return models.ResponseTokenUnauthorized().Error(), 0
 		}
+		log.Debug("token expired")
 		return models.ResponseTokenUnauthorized().Error(), 0
 	}
 
 	if !token.Valid {
+		log.Debug("invalid token")
 		return models.ResponseTokenExpired().Error(), 0
 	}
 
@@ -137,12 +144,15 @@ func TokenRefreshValidate(bearer string) string {
 	token, err := validateRefreshToken(bearer)
 	if err != nil {
 		if err == jwt.ErrSignatureInvalid {
+			log.Debug("token dont read")
 			return models.ResponseTokenUnauthorized().Error()
 		}
+		log.Debug("token expired")
 		return models.ResponseTokenUnauthorized().Error()
 	}
 
 	if !token.Valid {
+		log.Debug("invalid token")
 		return models.ResponseTokenExpired().Error()
 	}
 
@@ -156,12 +166,15 @@ func GetAccessTokenFromRefresh(bearer string) string {
 	token, err := validateRefreshToken(bearer)
 	if err != nil {
 		if err == jwt.ErrSignatureInvalid {
+			log.Debug("token dont read")
 			return models.ResponseTokenUnauthorized().Error()
 		}
+		log.Debug("token expired")
 		return models.ResponseTokenUnauthorized().Error()
 	}
 
 	if !token.Valid {
+		log.Debug("invalid token")
 		return models.ResponseTokenExpired().Error()
 	}
 

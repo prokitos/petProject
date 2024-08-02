@@ -6,6 +6,7 @@ import (
 	"strconv"
 )
 
+// рандомная генерация машин
 func EnrichtedBase() models.Car {
 
 	var curCar models.Car
@@ -25,6 +26,7 @@ func EnrichtedBase() models.Car {
 
 }
 
+// рандомная генерация владельцев
 func EnrichtedOwner() []models.People {
 
 	var nameMap = map[int]string{1: "Ivan", 2: "Sergey", 3: "Oleg", 4: "Anton", 5: "Dima", 6: "Sasha", 7: "Nikita", 8: "Slava", 9: "Kostya"}
@@ -46,7 +48,7 @@ func EnrichtedOwner() []models.People {
 	return peoples
 }
 
-// рандомим количество устройств, и суём радомные в массив
+// рандомим количество устройств, и рандомное количество устрйств
 func EnrichtedDevices() []models.AdditionalDevices {
 
 	var devMap = map[int]string{1: "ParkMaster", 2: "Trailer coupling", 3: "Window lifter", 4: "Power steering", 5: "Nitro", 6: "DVR"}
@@ -88,7 +90,7 @@ func EnrichtedDevices() []models.AdditionalDevices {
 
 }
 
-// рандомим значения для двигателя
+// рандомная генерация двигателя
 func EnrichtedEngine() models.CarEngine {
 
 	var engine models.CarEngine
@@ -98,7 +100,7 @@ func EnrichtedEngine() models.CarEngine {
 	return engine
 }
 
-// функция рандома от и до
+// функция рандома от и до  (до не включительно, поэтому нужно len + 1)
 func randRange(min, max int) int {
 	return rand.Intn(max-min) + min
 }

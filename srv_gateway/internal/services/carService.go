@@ -3,13 +3,13 @@ package services
 import (
 	"context"
 	"encoding/json"
-	"log"
 	"module/internal/models"
 	"strconv"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
 	amqp "github.com/rabbitmq/amqp091-go"
+	log "github.com/sirupsen/logrus"
 )
 
 func SendcarInsert(c *fiber.Ctx) error {
@@ -17,6 +17,7 @@ func SendcarInsert(c *fiber.Ctx) error {
 	var curCar models.CarToRM
 
 	if err := c.BodyParser(&curCar); err != nil {
+		log.Debug("body parse error")
 		return models.ResponseBadRequest()
 	}
 
@@ -47,6 +48,7 @@ func SendcarUpdate(c *fiber.Ctx) error {
 	var curCar models.CarToRM
 
 	if err := c.BodyParser(&curCar); err != nil {
+		log.Debug("body parse error")
 		return models.ResponseBadRequest()
 	}
 
@@ -164,7 +166,7 @@ func returnResponse(c *fiber.Ctx, res *models.ResponseCar) error {
 
 func handleError(err error, msg string) {
 	if err != nil {
-		log.Fatalf("%s: %s", msg, err)
+		log.Error("error", err, msg)
 	}
 
 }

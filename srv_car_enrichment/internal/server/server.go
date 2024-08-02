@@ -17,18 +17,20 @@ func Register(gRPC *grpc.Server) {
 	generpc.RegisterEnrichmentServer(gRPC, &serverApi{})
 }
 
+// генерация всех сразу
 func (s *serverApi) CarEnricht(ctx context.Context, req *generpc.CarRequest) (*generpc.CarResponse, error) {
 
-	test1 := services.EnrichtedOwner()
-	test2 := services.EnrichtedEngine()
-	test3 := services.EnrichtedDevices()
-	test4 := services.EnrichtedBase()
+	owners := services.EnrichtedOwner()
+	engines := services.EnrichtedEngine()
+	devices := services.EnrichtedDevices()
+	cars := services.EnrichtedBase()
 
-	res := ResultCompile(test1, test2, test3, test4)
+	res := ResultCompile(owners, engines, devices, cars)
 	return &res, nil
 
 }
 
+// сбор всех результатов в одну структуру
 func ResultCompile(test1 []models.People, test2 models.CarEngine, test3 []models.AdditionalDevices, test4 models.Car) generpc.CarResponse {
 
 	var result generpc.CarResponse

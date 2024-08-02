@@ -3,7 +3,6 @@ package services
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io/ioutil"
 	"module/internal/config"
 	"module/internal/models"
@@ -12,6 +11,7 @@ import (
 	"time"
 
 	"github.com/gofiber/fiber/v2"
+	log "github.com/sirupsen/logrus"
 )
 
 func sendToAuth(c *fiber.Ctx, sendData models.TokenResponser, supAddress string) (models.Tokens, error) {
@@ -30,7 +30,7 @@ func sendToAuth(c *fiber.Ctx, sendData models.TokenResponser, supAddress string)
 
 	resp, err := client.PostForm(baseURL.String(), params)
 	if err != nil {
-		fmt.Println("no connect to auth service")
+		log.Debug("no connect to auth service")
 		return models.Tokens{}, models.ResponseConnectError()
 	}
 
@@ -58,14 +58,14 @@ func sendTokenToCheck(c *fiber.Ctx, token string, supAddress string) (int, error
 
 	resp, err := client.Do(req)
 	if err != nil {
-		fmt.Println("no connect to auth service")
+		log.Debug("no connect to auth service")
 		return 0, models.ResponseConnectError()
 	}
 	defer resp.Body.Close()
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		fmt.Println("error reading byte")
+		log.Debug("reading byte error")
 		return 0, models.ResponseEncodingError()
 	}
 
@@ -92,14 +92,14 @@ func sendTokenToRefresh(c *fiber.Ctx, token string, refresh string, supAddress s
 
 	resp, err := client.Do(req)
 	if err != nil {
-		fmt.Println("no connect to auth service")
+		log.Debug("no connect to auth service")
 		return models.ExternalStruct{}
 	}
 	defer resp.Body.Close()
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		fmt.Println("error reading byte")
+		log.Debug("reading byte error")
 		return models.ExternalStruct{}
 	}
 

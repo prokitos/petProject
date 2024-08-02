@@ -9,6 +9,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	amqp "github.com/rabbitmq/amqp091-go"
+	log "github.com/sirupsen/logrus"
 )
 
 func DatabaseSellProducing(c *fiber.Ctx, curSell models.SellingToRM) error {
@@ -93,6 +94,7 @@ func SendSellcarInsert(c *fiber.Ctx) error {
 	var curSell models.SellingToRM
 
 	if err := c.BodyParser(&curSell); err != nil {
+		log.Debug("body parse error")
 		return models.ResponseBadRequest()
 	}
 
@@ -118,6 +120,7 @@ func SendSellcarUpdate(c *fiber.Ctx) error {
 	var curSell models.SellingToRM
 
 	if err := c.BodyParser(&curSell); err != nil {
+		log.Debug("body parse error")
 		return models.ResponseBadRequest()
 	}
 

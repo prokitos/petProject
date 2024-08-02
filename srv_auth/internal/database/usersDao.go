@@ -24,10 +24,12 @@ func CheckUserName(c *fiber.Ctx, curUser models.Users) error {
 
 	results := GlobalHandler.Find(&finded, curUser)
 	if results.Error != nil {
+		log.Debug("error get records from db")
 		return models.ResponseErrorAtServer()
 	}
 
 	if len(finded) != 0 {
+		log.Debug("nothing to show")
 		return models.ResponseBadRequest()
 	}
 
@@ -40,10 +42,12 @@ func GetExistingUser(c *fiber.Ctx, curUser models.Users) (models.Users, error) {
 
 	results := GlobalHandler.Find(&finded, curUser)
 	if results.Error != nil {
+		log.Debug("error get records from db")
 		return models.Users{}, models.ResponseErrorAtServer()
 	}
 
 	if len(finded) == 0 {
+		log.Debug("nothing to show")
 		return models.Users{}, models.ResponseBadRequest()
 	}
 
@@ -57,6 +61,7 @@ func UpdateRefreshToken(c *fiber.Ctx, curUser models.Users) error {
 
 	result := GlobalHandler.Where(test).Updates(curUser)
 	if result.Error != nil {
+		log.Debug("update error in database")
 		return models.ResponseErrorAtServer()
 	}
 
@@ -69,15 +74,18 @@ func CheckRefreshToken(c *fiber.Ctx, refresh string, curUser models.Users) error
 
 	results := GlobalHandler.Find(&finded, curUser)
 	if results.Error != nil {
+		log.Debug("database find error")
 		return models.ResponseErrorAtServer()
 	}
 
 	if len(finded) == 0 {
+		log.Debug("nothing to show")
 		return models.ResponseBadRequest()
 	}
 
 	tokenBD := finded[0].RefreshToken
 	if tokenBD != refresh {
+		log.Debug("token mismatch in database")
 		return models.ResponseBadRequest()
 	}
 

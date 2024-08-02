@@ -4,6 +4,7 @@ import (
 	"module/internal/models"
 
 	"github.com/gofiber/fiber/v2"
+	log "github.com/sirupsen/logrus"
 )
 
 func Register(c *fiber.Ctx) error {
@@ -15,6 +16,7 @@ func Register(c *fiber.Ctx) error {
 
 	res, err := sendToAuth(c, sendData, "/register")
 	if err.Error() != models.ResponseGood().Error() {
+		log.Debug("send to authorization error")
 		return c.Status(fiber.StatusCreated).JSON(fiber.Map{"status": err.Error()})
 	}
 
@@ -29,6 +31,7 @@ func Authorization(c *fiber.Ctx) error {
 
 	res, err := sendToAuth(c, sendData, "/login")
 	if err.Error() != models.ResponseGood().Error() {
+		log.Debug("send to authorization error")
 		return c.Status(fiber.StatusCreated).JSON(fiber.Map{"status": err.Error()})
 	}
 

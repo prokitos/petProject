@@ -38,7 +38,7 @@ func StartMigration() {
 
 }
 
-// проверка если есть база данных vortext. если нет, то создать.
+// проверка если есть база данных. если нет, то создать.
 func CheckDatabaseCreated(config models.ConnectConfig) error {
 
 	// открытие соеднение с базой по стандарту

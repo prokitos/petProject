@@ -21,6 +21,12 @@ func main() {
 	cfg := config.ConfigMustLoad()
 	config.TokenConfigLoadToService(cfg.Token)
 
+	// проверка что есть бд, или его создание
+	err := database.CheckDatabaseCreated(cfg.Connect)
+	if err != nil {
+		return
+	}
+
 	// миграция и подключение к бд.
 	database.OpenConnection(cfg.Connect)
 	database.StartMigration()

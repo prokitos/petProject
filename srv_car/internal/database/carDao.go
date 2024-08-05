@@ -23,6 +23,7 @@ func ShowCar(curModel models.Car) models.ResponseCar {
 
 	results := GlobalHandler.Preload("Engine").Preload("Devices").Preload("OwnerList").Find(&finded, curModel)
 	if results.Error != nil {
+		log.Debug("show record error!")
 		return models.ResponseCarBadShow()
 	}
 
@@ -46,6 +47,7 @@ func UpdateCar(curModel models.Car) models.ResponseCar {
 
 	var curCar models.Car
 	if result := GlobalHandler.Preload("Engine").Preload("Devices").Preload("OwnerList").First(&curCar, id); result.Error != nil {
+		log.Debug("update record error!")
 		return models.ResponseCarBadUpdate()
 	}
 
@@ -78,6 +80,7 @@ func CreateNewSell(instance models.SellingToRM) models.ResponseSell {
 	var finded models.Car
 	resultt := GlobalHandler.First(&finded, current)
 	if resultt.Error != nil {
+		log.Debug("create record error!")
 		return models.ResponseSellBadExecute()
 	}
 	if finded.Status != "for sale" {
@@ -116,6 +119,7 @@ func ShowSell(instance models.SellingToRM) models.ResponseSell {
 
 	results := GlobalHandler.Preload("Car").Preload("People").Preload("Car.Engine").Preload("Car.Devices").Preload("Car.OwnerList").Find(&finded, curSell)
 	if results.Error != nil {
+		log.Debug("show record error!")
 		return models.ResponseSellBadShow()
 	}
 
@@ -126,6 +130,7 @@ func DeleteSell(instance models.SellingToRM) models.ResponseSell {
 
 	var curSell models.Selling
 	if result := GlobalHandler.Preload("Car").First(&curSell, instance.Id); result.Error != nil {
+		log.Debug("delete record error!")
 		return models.ResponseSellBadExecute()
 	}
 

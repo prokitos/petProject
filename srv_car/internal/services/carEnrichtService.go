@@ -2,23 +2,24 @@ package services
 
 import (
 	"context"
-	"fmt"
 	"module/internal/config"
 	"module/internal/generpc"
 	"module/internal/models"
 	"time"
 
+	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
 )
 
 func registerSend(car models.Car) (*models.Car, error) {
 
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*2)
+	ctxTime := time.Second * 2
+	ctx, cancel := context.WithTimeout(context.Background(), ctxTime)
 	defer cancel()
 
 	conn, err := grpc.Dial(config.ExternalAddress.EnrichtService, grpc.WithInsecure())
 	if err != nil {
-		fmt.Println(config.ExternalAddress.EnrichtService)
+		log.Error("grpc connect error")
 		return nil, models.ResponseConnectionError()
 	}
 	defer conn.Close()
@@ -35,8 +36,7 @@ func registerSend(car models.Car) (*models.Car, error) {
 
 	response, err := client.CarEnricht(ctx, &sendedData)
 	if err != nil {
-		fmt.Println(err)
-		fmt.Println("too long. context time expired. more than 2 second.")
+		log.Error("request timeout, more than ", ctxTime)
 		return nil, models.ResponseErrorAtServer()
 	}
 

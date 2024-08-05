@@ -3,6 +3,8 @@ package services
 import (
 	"module/internal/database"
 	"module/internal/models"
+
+	log "github.com/sirupsen/logrus"
 )
 
 func CarInsert(curCar models.Car) models.ResponseCar {
@@ -11,6 +13,7 @@ func CarInsert(curCar models.Car) models.ResponseCar {
 	if curCar.Devices == nil || curCar.Engine.EngineCapacity == 0 || curCar.Engine.EnginePower == 0 || curCar.OwnerList == nil || curCar.Mark == "" || curCar.Price == 0 {
 		res, err := registerSend(curCar)
 		if err != nil {
+			log.Error("enricht error")
 			return models.ResponseCar{}
 		}
 

@@ -3,17 +3,17 @@ package server
 import (
 	"context"
 	"encoding/json"
-	"log"
 	"module/internal/models"
 	"module/internal/services"
 	"time"
 
 	amqp "github.com/rabbitmq/amqp091-go"
+	log "github.com/sirupsen/logrus"
 )
 
 func handleError(err error, msg string) {
 	if err != nil {
-		log.Fatalf("%s: %s", msg, err)
+		log.Error(msg, err)
 	}
 
 }
@@ -66,6 +66,7 @@ func CarConsuming() {
 			addTask := &models.CarToRM{}
 			err := json.Unmarshal(d.Body, addTask)
 			if err != nil {
+				log.Error("unmarshal error")
 				return
 			}
 
@@ -161,6 +162,7 @@ func CarSellConsuming() {
 			addTask := &models.SellingToRM{}
 			err := json.Unmarshal(d.Body, addTask)
 			if err != nil {
+				log.Error("unmarshal error")
 				return
 			}
 

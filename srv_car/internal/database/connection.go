@@ -18,7 +18,8 @@ func OpenConnection(config models.ConnectConfig) {
 
 	db, err := gorm.Open(postgres.Open(connectStr), &gorm.Config{})
 	if err != nil {
-		log.Fatalln(err)
+		panic("connection with postgres error")
+		return
 	}
 
 	GlobalHandler = db
@@ -44,7 +45,7 @@ func CheckDatabaseCreated(config models.ConnectConfig) error {
 	connectStr := fmt.Sprintf("postgres://%s:%s@%s:%s/%s", config.User, config.Pass, config.Host, config.Port, "postgres")
 	db, err := gorm.Open(postgres.Open(connectStr), &gorm.Config{})
 	if err != nil {
-		fmt.Println("error, dont opened")
+		log.Error("database don't open")
 		return models.ResponseBadRequest()
 	}
 
@@ -58,7 +59,7 @@ func CheckDatabaseCreated(config models.ConnectConfig) error {
 	stmt := fmt.Sprintf("SELECT * FROM pg_database WHERE datname = '%s';", config.Name)
 	rs := db.Raw(stmt)
 	if rs.Error != nil {
-		log.Info("error, dont read bd")
+		log.Error("error, dont read bd")
 		return models.ResponseBadRequest()
 	}
 
@@ -67,7 +68,7 @@ func CheckDatabaseCreated(config models.ConnectConfig) error {
 	if rs.Find(rec); len(rec) == 0 {
 		stmt := fmt.Sprintf("CREATE DATABASE %s;", config.Name)
 		if rs := db.Exec(stmt); rs.Error != nil {
-			log.Info("error, dont create a database")
+			log.Error("error, dont create a database")
 			return models.ResponseBadRequest()
 		}
 	}

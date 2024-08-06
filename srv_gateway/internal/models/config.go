@@ -7,9 +7,9 @@ type Config struct {
 }
 
 type ExternalConfig struct {
-	AuthService  string `yaml:"auth"`
-	CarService   string `yaml:"car"`
-	OtherService string `yaml:"another"`
+	AuthService    string `yaml:"auth"`
+	CarService     string `yaml:"car"`
+	RabbitMqServer string `yaml:"rabbit"`
 }
 
 type ServerConfig struct {

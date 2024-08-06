@@ -17,7 +17,7 @@ func main() {
 	log.Info("the server is starting")
 
 	// получение конфигов
-	cfg := config.ConfigMustLoad()
+	cfg := config.ConfigMustLoad("docker")
 
 	// запуск сервера в горутине, чтобы потом нормально звершать приложение
 	var application app.App

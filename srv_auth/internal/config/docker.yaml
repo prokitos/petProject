@@ -1,0 +1,15 @@
+env: "local"
+server:
+  port: ":8002"
+token:
+  access_ttl: 30m
+  refresh_ttl: 3h
+  access_key: "basic_key"
+  refresh_key: "super_mega_key"
+postgres:
+  user: "postgres"
+  pass: "root"
+  port: "5432"
+  host: "localhost"
+  name: "pets"
+  reload: false

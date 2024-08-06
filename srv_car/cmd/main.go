@@ -18,7 +18,8 @@ func main() {
 	log.Info("the server is starting")
 
 	// получение конфигов
-	cfg := config.ConfigMustLoad()
+	cfg := config.ConfigMustLoad("docker")
+	server.RMQaddress = cfg.External.RabbitMqServer
 
 	// проверка что есть бд, или его создание
 	err := database.CheckDatabaseCreated(cfg.Connect)

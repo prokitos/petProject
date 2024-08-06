@@ -12,8 +12,10 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+var RMQaddress string
+
 func DatabaseSellProducing(c *fiber.Ctx, curSell models.SellingToRM) error {
-	conn, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
+	conn, err := amqp.Dial("amqp://guest:guest@" + RMQaddress)
 	handleError(err, "Failed to connect to RabbitMQ")
 	defer conn.Close()
 

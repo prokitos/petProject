@@ -1,0 +1,82 @@
+version: "2.1"
+
+networks:
+  ps:
+
+services:
+ 
+  gateway:
+    image: srv_gateway
+    container_name: ps-gateway
+    ports:
+      - "127.0.0.1:8001:8001"
+    depends_on:
+      "postgresql":
+        condition: service_healthy
+    networks:
+      - ps
+
+  auth:
+    image: srv_auth
+    container_name: ps-auth
+    ports:
+      - "127.0.0.1:8002:8002"
+    depends_on:
+      "postgresql":
+        condition: service_healthy
+    networks:
+      - ps
+
+  car:
+    image: srv_car
+    container_name: ps-car
+    ports:
+      - "127.0.0.1:8003:8003"
+    depends_on:
+      "postgresql":
+        condition: service_healthy
+    networks:
+      - ps
+
+
+
+  enricht:
+    image: srv_enricht
+    container_name: ps-autenrichth
+    ports:
+      - "127.0.0.1:8004:8004"
+    depends_on:
+      "postgresql":
+        condition: service_healthy
+    networks:
+      - ps
+
+  postgresql:
+    image: postgres:14-alpine
+    container_name: ps-sql
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=root
+    volumes:
+      - ./data:/var/lib/postgresql/data
+    networks:
+      - ps
+    healthcheck:
+      test: pg_isready -U postgres
+
+
+  rabbitmq:
+    image: rabbitmq:3.10.7-management
+    hostname: rabbitmq
+    restart: always
+    environment:
+      - RABBITMQ_DEFAULT_USER=rmuser
+      - RABBITMQ_DEFAULT_PASS=rmpassword
+      - RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS=-rabbit disk_free_limit 2147483648
+    volumes:
+      - ./rabbitmq:/var/lib/rabbitmq
+    ports:
+      - 15672:15672

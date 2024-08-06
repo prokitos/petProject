@@ -1,0 +1,7 @@
+env: "local"
+server:
+  port: ":8001"
+external:
+  auth: "http://localhost:8002"
+  car: "http://localhost:8003"
+  rabbit:  "localhost:5672"

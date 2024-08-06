@@ -10,3 +10,4 @@ postgres:
   reload: false
 external:
   enricht: "localhost:8006"
+  rabbit:  "localhost:5672"

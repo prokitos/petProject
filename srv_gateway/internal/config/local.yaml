@@ -4,4 +4,4 @@ server:
 external:
   auth: "http://localhost:8002"
   car: "http://localhost:8003"
-  another: "http://localhost:8XXX"
+  rabbit:  "localhost:5672"

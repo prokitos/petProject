@@ -3,6 +3,7 @@ package main
 import (
 	"module/internal/app"
 	"module/internal/config"
+	"module/internal/services"
 	"os"
 	"os/signal"
 	"syscall"
@@ -17,10 +18,11 @@ func main() {
 	log.Info("the server is starting")
 
 	// получение конфигов
-	cfg := config.ConfigMustLoad()
-	var application app.App
+	cfg := config.ConfigMustLoad("docker")
+	services.RMQaddress = cfg.External.RabbitMqServer
 
 	// запуск сервера в горутине, чтобы потом нормально звершать приложение
+	var application app.App
 	go application.NewServer(cfg.Server)
 
 	// в итоге мы обрабатываем завершение приложения, и если мы закрыаем его как либо, то оно выполняет действие из метода Stop

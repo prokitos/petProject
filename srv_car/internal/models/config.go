@@ -22,4 +22,5 @@ type ServerConfig struct {
 
 type ExternalConfig struct {
 	EnrichtService string `yaml:"enricht"`
+	RabbitMqServer string `yaml:"rabbit"`
 }

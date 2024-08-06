@@ -7,9 +7,9 @@ import (
 	"github.com/ilyakaznacheev/cleanenv"
 )
 
-func ConfigMustLoad() *models.Config {
+func ConfigMustLoad(name string) *models.Config {
 
-	path := "internal/config/local.yaml"
+	path := "internal/config/" + name + ".yaml"
 	var cfg models.Config
 
 	if _, err := os.Stat(path); os.IsNotExist(err) {

@@ -18,7 +18,7 @@ func main() {
 	log.Info("the server is starting")
 
 	// получение конфигов
-	cfg := config.ConfigMustLoad()
+	cfg := config.ConfigMustLoad("docker")
 	config.TokenConfigLoadToService(cfg.Token)
 
 	// проверка что есть бд, или его создание

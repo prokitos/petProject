@@ -11,7 +11,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-var RMQaddress string
+var RMQaddress string = ""
 
 func handleError(err error, msg string) {
 	if err != nil {
@@ -22,7 +22,7 @@ func handleError(err error, msg string) {
 
 func CarConsuming() {
 
-	conn, err := amqp.Dial("amqp://guest:guest@" + RMQaddress)
+	conn, err := amqp.Dial("amqp://guest:guest@" + RMQaddress + "/")
 	handleError(err, "Failed to connect to RabbitMQ")
 	defer conn.Close()
 
@@ -118,7 +118,8 @@ func GatewayCar(car *models.CarToRM) models.ResponseCar {
 
 func CarSellConsuming() {
 
-	conn, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
+	conn, err := amqp.Dial("amqp://guest:guest@" + RMQaddress + "/")
+	log.Info(RMQaddress)
 	handleError(err, "Failed to connect to RabbitMQ")
 	defer conn.Close()
 

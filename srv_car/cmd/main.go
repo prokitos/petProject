@@ -21,11 +21,7 @@ func main() {
 	cfg := config.ConfigMustLoad("docker")
 	server.RMQaddress = cfg.External.RabbitMqServer
 
-	// проверка что есть бд, или его создание
-	err := database.CheckDatabaseCreated(cfg.Connect)
-	if err != nil {
-		return
-	}
+	// проверка что есть бд не делаю тут, так как есть в сервисе авторизации, а без авторизации этот сервис не работает
 
 	// миграция и подключение к бд.
 	database.OpenConnection(cfg.Connect)

@@ -5,9 +5,9 @@ postgres:
   user: "postgres"
   pass: "root"
   port: "5432"
-  host: "localhost"
+  host: "postgresql"
   name: "pets"
   reload: false
 external:
-  enricht: "localhost:8004"
-  rabbit:  "localhost:5672"
+  enricht: "enricht:8004"
+  rabbit: "rabbitmq:15672"

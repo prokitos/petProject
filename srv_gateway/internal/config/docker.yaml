@@ -4,4 +4,4 @@ server:
 external:
   auth: "http://auth:8002"
   car: "http://car:8003"
-  rabbit:  "rabbitmq:15672"
+  rabbit:  "rabbitmq:5672"

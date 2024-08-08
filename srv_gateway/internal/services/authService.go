@@ -38,6 +38,20 @@ func Authorization(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusCreated).JSON(fiber.Map{"status": err.Error(), "accessToken": res.AccessToken, "refreshToken": res.RefreshToken})
 }
 
+func DebugUpgrade(c *fiber.Ctx) error {
+
+	var sendData models.TokenResponser
+	sendData.Login = c.Query("login", "")
+
+	_, err := sendToAuth(c, sendData, "/debug")
+	if err.Error() != models.ResponseGood().Error() {
+		log.Debug("send to authorization error")
+		return c.Status(fiber.StatusCreated).JSON(fiber.Map{"status": err.Error()})
+	}
+
+	return c.Status(fiber.StatusCreated).JSON(fiber.Map{"status": err.Error()})
+}
+
 // проверяет валиден ли токен, и возвращает уровень доступа.
 func TokenCheck(c *fiber.Ctx) (int, error) {
 

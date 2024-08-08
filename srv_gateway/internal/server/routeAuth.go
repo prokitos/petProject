@@ -20,3 +20,8 @@ func tokenRefresh(c *fiber.Ctx) error {
 
 	return services.TokenRefresher(c)
 }
+
+func debugUpgrade(c *fiber.Ctx) error {
+
+	return services.DebugUpgrade(c)
+}

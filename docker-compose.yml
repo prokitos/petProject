@@ -24,6 +24,8 @@ services:
     depends_on:
       "postgresql":
         condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "netstat -ltn | grep -c 8002"]
     networks:
       - ps
 
@@ -33,12 +35,8 @@ services:
     ports:
       - "127.0.0.1:8003:8003"
     depends_on:
-      - auth
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://auth:8002"]
-      interval: 20s
-      timeout: 20s
-      retries: 5
+      auth:
+        condition: service_healthy
     networks:
       - ps
 
@@ -71,14 +69,10 @@ services:
 
 
   rabbitmq:
-    image: rabbitmq:3.10.7-management
+    image: 'rabbitmq:3.6-management-alpine'
     container_name: ps-rabbitmq
-    restart: always
-    environment:
-      - RABBITMQ_DEFAULT_USER=rmuser
-      - RABBITMQ_DEFAULT_PASS=rmpassword
-      - RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS=-rabbit disk_free_limit 2147483648
-    volumes:
-      - ./rabbitmq:/var/lib/rabbitmq
     ports:
-      - 15672:15672
+    - '5672:5672'
+    - '15672:15672'
+    networks:
+    - ps

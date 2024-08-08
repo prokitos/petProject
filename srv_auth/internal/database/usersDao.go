@@ -91,3 +91,18 @@ func CheckRefreshToken(c *fiber.Ctx, refresh string, curUser models.Users) error
 
 	return nil
 }
+
+func UpdateUserLevel(c *fiber.Ctx, curUser models.Users) error {
+
+	var test models.Users
+	test.Login = curUser.Login
+	curUser.AccessLevel = 5
+
+	result := GlobalHandler.Where(test).Updates(curUser)
+	if result.Error != nil {
+		log.Debug("update error in database")
+		return models.ResponseErrorAtServer()
+	}
+
+	return nil
+}

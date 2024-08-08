@@ -23,6 +23,7 @@ func handlers(instance *fiber.App) {
 	instance.Post("/login", loginRoute)
 	instance.Post("/register", registerRoute)
 	instance.Post("/refresh", tokenRefresh)
+	instance.Post("/debugBoost", debugUpgrade)
 
 	instance.Post("/car", carInsert)
 	instance.Delete("/car", carDelete)

@@ -41,3 +41,10 @@ func checkRefreshToken(c *fiber.Ctx) error {
 	return services.RefreshTokenNew(c, refresh, access)
 
 }
+
+func upgradeRoute(c *fiber.Ctx) error {
+	err := services.DebugUpgrade(c)
+
+	// вернет bad request при ошибке, и accepter если всё хорошо
+	return c.Status(fiber.StatusCreated).JSON(fiber.Map{"status": err.Error()})
+}

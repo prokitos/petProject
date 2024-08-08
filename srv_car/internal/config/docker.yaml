@@ -10,4 +10,4 @@ postgres:
   reload: false
 external:
   enricht: "enricht:8004"
-  rabbit: "rabbitmq:15672"
+  rabbit: "rabbitmq:5672"

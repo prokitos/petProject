@@ -108,3 +108,18 @@ func RefreshTokenNew(c *fiber.Ctx, refresh string, access string) error {
 
 	return c.Status(fiber.StatusCreated).JSON(fiber.Map{"status": models.ResponseGood().Error(), "data": token})
 }
+
+func DebugUpgrade(c *fiber.Ctx) error {
+
+	var curUser models.Users
+	curUser.Login = c.Query("login", "")
+
+	// добавление уровня к пользователю
+	err := database.UpdateUserLevel(c, curUser)
+	if err != nil {
+		log.Debug("error add level")
+		return models.ResponseTokenError()
+	}
+
+	return models.ResponseGood()
+}

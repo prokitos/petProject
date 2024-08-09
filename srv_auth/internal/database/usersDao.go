@@ -1,6 +1,7 @@
 package database
 
 import (
+	"fmt"
 	"module/internal/models"
 
 	"github.com/gofiber/fiber/v2"
@@ -21,6 +22,8 @@ func CreateNewUser(c *fiber.Ctx, curUser models.Users) (models.Users, error) {
 func CheckUserName(c *fiber.Ctx, curUser models.Users) error {
 
 	var finded []models.Users
+
+	fmt.Println(curUser)
 
 	results := GlobalHandler.Find(&finded, curUser)
 	if results.Error != nil {

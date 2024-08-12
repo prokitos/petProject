@@ -1,7 +1,6 @@
 package database
 
 import (
-	"fmt"
 	"module/internal/models"
 
 	"github.com/gofiber/fiber/v2"
@@ -23,7 +22,9 @@ func CheckUserName(c *fiber.Ctx, curUser models.Users) error {
 
 	var finded []models.Users
 
-	fmt.Println(curUser)
+	if GlobalHandler == nil {
+		return models.ResponseServerConnectionError()
+	}
 
 	results := GlobalHandler.Find(&finded, curUser)
 	if results.Error != nil {
@@ -42,6 +43,10 @@ func CheckUserName(c *fiber.Ctx, curUser models.Users) error {
 func GetExistingUser(c *fiber.Ctx, curUser models.Users) (models.Users, error) {
 
 	var finded []models.Users
+
+	if GlobalHandler == nil {
+		return models.Users{}, models.ResponseServerConnectionError()
+	}
 
 	results := GlobalHandler.Find(&finded, curUser)
 	if results.Error != nil {

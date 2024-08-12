@@ -23,7 +23,7 @@ func Authorization(c *fiber.Ctx) (models.TokenResponser, error) {
 	curUser, err := database.GetExistingUser(c, curUser)
 	if err != nil {
 		log.Debug("database dont have current user")
-		return models.TokenResponser{}, models.ResponseBadRequest()
+		return models.TokenResponser{}, err
 	}
 
 	res := TokenGetPair(curUser)
@@ -66,7 +66,7 @@ func Registration(c *fiber.Ctx) (models.TokenResponser, error) {
 	err := database.CheckUserName(c, models.Users{Login: login})
 	if err != nil {
 		log.Debug("database already have current login")
-		return models.TokenResponser{}, models.ResponseUserExist()
+		return models.TokenResponser{}, err
 	}
 
 	// создание нового пользователя с 1 уровнем доступа. потом генерация токена

@@ -25,6 +25,9 @@ func checkAccessToken(c *fiber.Ctx) error {
 
 	// проверка токена
 	authorization := c.Get("Authorization")
+	if authorization == "" {
+		return c.Status(fiber.StatusCreated).JSON(fiber.Map{"status": "token error"})
+	}
 	status, level := services.TokenAccessValidate(authorization)
 
 	// если всё нормально, то идти дальше и обращаться к микросервису
@@ -36,6 +39,9 @@ func checkRefreshToken(c *fiber.Ctx) error {
 	// получение токенов
 	access := c.Get("Authorization")
 	refresh := c.FormValue("refresh")
+	if access == "" || refresh == "" {
+		return c.Status(fiber.StatusCreated).JSON(fiber.Map{"status": "token error"})
+	}
 
 	// возвращаем новый аксес токен
 	return services.RefreshTokenNew(c, refresh, access)

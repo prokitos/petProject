@@ -123,7 +123,7 @@ func TokenAccessValidate(bearer string) (string, int) {
 			return models.ResponseTokenUnauthorized().Error(), 0
 		}
 		log.Debug("token expired")
-		return models.ResponseTokenUnauthorized().Error(), 0
+		return err.Error(), 0
 	}
 
 	if !token.Valid {
@@ -193,10 +193,18 @@ func GetAccessTokenFromRefresh(bearer string) string {
 // проверка валидности access токена
 func validateAccessToken(bearerToken string) (*jwt.Token, error) {
 
+	temp := strings.Split(bearerToken, " ")
+	if len(temp) < 2 {
+		return nil, models.ResponseTokenError()
+	}
+
 	tokenString := strings.Split(bearerToken, " ")[1] // мы получаем токен в виде "bearer HG4HGK4FDRH45" и поэтому мы тут убираем слово bearer и пробел
 	token, err := jwt.ParseWithClaims(tokenString, &models.AccessToken{}, func(token *jwt.Token) (interface{}, error) {
 		return AccessKey, nil
 	})
+	if err != nil {
+		return token, models.ResponseTokenExpired()
+	}
 	return token, err
 }
 

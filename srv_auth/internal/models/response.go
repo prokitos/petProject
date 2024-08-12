@@ -14,6 +14,18 @@ func ResponseBadRequest() error {
 	return errors.New("bad request")
 }
 
+func ResponseServerConnectionError() error {
+	return errors.New("connection to server error")
+}
+
+func ErrorLoginPassword() error {
+	return errors.New("login or password error")
+}
+
+func ResponseAccessError() error {
+	return errors.New("access error")
+}
+
 func ResponseTokenError() error {
 	return errors.New("token error")
 }

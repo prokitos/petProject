@@ -32,8 +32,6 @@ func ShowCar(curModel models.Car) models.ResponseCar {
 
 func DeleteCar(curModel models.Car) models.ResponseCar {
 
-	// остаются не связанные записи в people. удалять или нет?
-	// если удалять, то нужно получить сначала всех овнеров у машины, а потом в цикле удалять из people людей с нужным номером.
 	GlobalHandler.Select(clause.Associations).Delete(&curModel)
 	GlobalHandler.Delete(&models.Car{}, curModel.Id)
 
